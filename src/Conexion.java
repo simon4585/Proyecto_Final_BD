@@ -1,11 +1,10 @@
-package conexionBD;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class SQLConnection {
+public class  Conexion {
 
-    public static Connection getConnection() throws SQLException {
+    public static void main(String[] args) {
         String host = System.getenv("DB_HOST");
         String port = System.getenv("DB_PORT");
         String dbName = System.getenv("DB_NAME");
@@ -16,11 +15,16 @@ public class SQLConnection {
 
         try {
             Class.forName("org.postgresql.Driver");
-            return DriverManager.getConnection(url, user, pass);
+            Connection conn = DriverManager.getConnection(url, user, pass);
+
+            if (conn != null) {
+                System.out.println("¡Conexión exitosa!");
+            }
+
         } catch (ClassNotFoundException e) {
             System.out.println("Driver JDBC no encontrado: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error de conexión: " + e.getMessage());
         }
-        return null;
     }
 }
-
