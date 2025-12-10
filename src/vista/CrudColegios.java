@@ -1,59 +1,83 @@
 package vista;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class CrudColegios extends JFrame {
 
     private JTextField txtId, txtNombre, txtDireccion, txtTelefono;
 
     public CrudColegios() {
+
         setTitle("Gestión de Colegios");
-        setSize(500, 350);
+        setSize(520, 380);
         setLayout(null);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(Color.WHITE); // Fondo blanco
 
+        Font fontLabel = new Font("Century Gothic", Font.BOLD, 18);
+        Font fontBtn = new Font("Century Gothic", Font.BOLD, 18);
+
+        // ----------------- LABELS -----------------
         JLabel lblId = new JLabel("ID Colegio:");
-        lblId.setBounds(30, 30, 100, 25);
+        lblId.setFont(fontLabel);
+        lblId.setBounds(30, 30, 150, 25);
         add(lblId);
 
-        txtId = new JTextField();
-        txtId.setBounds(150, 30, 100, 25);
-        add(txtId);
-
         JLabel lblNombre = new JLabel("Nombre:");
-        lblNombre.setBounds(30, 70, 100, 25);
+        lblNombre.setFont(fontLabel);
+        lblNombre.setBounds(30, 75, 150, 25);
         add(lblNombre);
 
-        txtNombre = new JTextField();
-        txtNombre.setBounds(150, 70, 250, 25);
-        add(txtNombre);
-
         JLabel lblDireccion = new JLabel("Dirección:");
-        lblDireccion.setBounds(30, 110, 100, 25);
+        lblDireccion.setFont(fontLabel);
+        lblDireccion.setBounds(30, 120, 150, 25);
         add(lblDireccion);
 
-        txtDireccion = new JTextField();
-        txtDireccion.setBounds(150, 110, 250, 25);
-        add(txtDireccion);
-
         JLabel lblTelefono = new JLabel("Teléfono:");
-        lblTelefono.setBounds(30, 150, 100, 25);
+        lblTelefono.setFont(fontLabel);
+        lblTelefono.setBounds(30, 165, 150, 25);
         add(lblTelefono);
 
+        // ----------------- TEXTFIELDS (alineados) -----------------
+        txtId = new JTextField();
+        txtId.setBounds(180, 30, 250, 28);
+        add(txtId);
+
+        txtNombre = new JTextField();
+        txtNombre.setBounds(180, 75, 250, 28);
+        add(txtNombre);
+
+        txtDireccion = new JTextField();
+        txtDireccion.setBounds(180, 120, 250, 28);
+        add(txtDireccion);
+
         txtTelefono = new JTextField();
-        txtTelefono.setBounds(150, 150, 150, 25);
+        txtTelefono.setBounds(180, 165, 250, 28);
         add(txtTelefono);
 
+        // ----------------- BOTONES -----------------
+        Color azul = new Color(80, 150, 255);
+
         JButton btnGuardar = new JButton("Guardar");
-        btnGuardar.setBounds(50, 220, 100, 30);
+        btnGuardar.setBounds(40, 240, 130, 35);
+        btnGuardar.setBackground(azul);
+        btnGuardar.setForeground(Color.WHITE);
+        btnGuardar.setFont(fontBtn);
         add(btnGuardar);
 
         JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.setBounds(180, 220, 100, 30);
+        btnBuscar.setBounds(190, 240, 130, 35);
+        btnBuscar.setBackground(azul);
+        btnBuscar.setForeground(Color.WHITE);
+        btnBuscar.setFont(fontBtn);
         add(btnBuscar);
 
         JButton btnEliminar = new JButton("Eliminar");
-        btnEliminar.setBounds(310, 220, 100, 30);
+        btnEliminar.setBounds(340, 240, 130, 35);
+        btnEliminar.setBackground(azul);
+        btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setFont(fontBtn);
         add(btnEliminar);
 
         setVisible(true);

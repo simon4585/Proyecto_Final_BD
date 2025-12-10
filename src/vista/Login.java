@@ -1,6 +1,7 @@
 package vista;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Login extends JFrame {
 
@@ -8,31 +9,62 @@ public class Login extends JFrame {
     private JPasswordField txtClave;
 
     public Login() {
-        setTitle("Login - Empresa de Confecciones");
-        setSize(350, 250);
-        setLayout(null);
-        setLocationRelativeTo(null);
+
+        setTitle("Login - Urban Stitch");
+        setSize(420, 520);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        getContentPane().setBackground(Color.WHITE);
 
-        JLabel lblUser = new JLabel("Usuario:");
-        lblUser.setBounds(50, 50, 100, 25);
-        add(lblUser);
+        setLayout(new GridBagLayout());
 
-        txtUsuario = new JTextField();
-        txtUsuario.setBounds(150, 50, 130, 25);
-        add(txtUsuario);
+        //panel
+        RoundedPanel panel = new RoundedPanel(40, Color.WHITE, new Color(80, 150, 255), 4);
+        panel.setPreferredSize(new Dimension(330, 430));
+        panel.setMaximumSize(new Dimension(330, 430));
+
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        add(panel);
+
+
+        JLabel lblTitulo = new JLabel("URBAN STITCH", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Century Gothic", Font.BOLD, 30));
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblTitulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 5, 0));
+        panel.add(lblTitulo);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 30)));
+
+        JLabel lblUsuario = new JLabel("Usuario:");
+        lblUsuario.setFont(new Font("Century Gothic", Font.BOLD, 22));
+        lblUsuario.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(lblUsuario);
+
+        txtUsuario = new JTextField(15);
+        txtUsuario.setMaximumSize(new Dimension(220, 30));
+        panel.add(txtUsuario);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 30)));
 
         JLabel lblClave = new JLabel("Contraseña:");
-        lblClave.setBounds(50, 95, 100, 25);
-        add(lblClave);
+        lblClave.setFont(new Font("Century Gothic", Font.BOLD, 22));
+        lblClave.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(lblClave);
 
-        txtClave = new JPasswordField();
-        txtClave.setBounds(150, 95, 130, 25);
-        add(txtClave);
+        txtClave = new JPasswordField(15);
+        txtClave.setMaximumSize(new Dimension(220, 30));
+        panel.add(txtClave);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 35)));
 
         JButton btnIngresar = new JButton("Ingresar");
-        btnIngresar.setBounds(110, 150, 120, 30);
-        add(btnIngresar);
+        btnIngresar.setFont(new Font("Century Gothic", Font.BOLD, 22));
+        btnIngresar.setBackground(new Color(80, 150, 255));
+        btnIngresar.setForeground(Color.WHITE);
+        btnIngresar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnIngresar.setMaximumSize(new Dimension(150, 40));
+        panel.add(btnIngresar);
 
         btnIngresar.addActionListener(e -> {
             new Menu();
