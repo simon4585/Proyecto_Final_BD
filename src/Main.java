@@ -1,5 +1,6 @@
+import conexionBD.SQLConnection;
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Aplicación iniciada...");
+        SQLConnection.getConnection();
     }
 }
