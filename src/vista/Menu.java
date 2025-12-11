@@ -1,41 +1,94 @@
 package vista;
 
+import java.awt.*;
 import javax.swing.*;
 
 public class Menu extends JFrame {
 
     public Menu() {
-        setTitle("Menú Principal");
-        setSize(450, 350);
-        setLayout(null);
-        setLocationRelativeTo(null);
+
+        setTitle("Menú Principal - Urban Stitch");
+        setExtendedState(JFrame.MAXIMIZED_BOTH);   // MAXIMIZADA
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        getContentPane().setBackground(Color.WHITE);
 
-        JButton btnClientes = new JButton("Clientes");
-        btnClientes.setBounds(140, 40, 160, 30);
-        add(btnClientes);
-
-        JButton btnProductos = new JButton("Productos");
-        btnProductos.setBounds(140, 90, 160, 30);
-        add(btnProductos);
-
-        JButton btnPedidos = new JButton("Pedidos");
-        btnPedidos.setBounds(140, 140, 160, 30);
-        add(btnPedidos);
-
-        JButton btnReportes = new JButton("Reportes");
-        btnReportes.setBounds(140, 190, 160, 30);
-        add(btnReportes);
-
-        btnClientes.addActionListener(e -> new CrudClientes());
-        btnProductos.addActionListener(e -> new CrudProductos());
-        btnPedidos.addActionListener(e -> new CrudPedidos());
-        btnReportes.addActionListener(e -> new Reportes());
+        setLayout(new GridBagLayout()); // Centrar el panel redondeado
 
 
+        JPanel contenedor = new JPanel();
+        contenedor.setLayout(new BoxLayout(contenedor, BoxLayout.Y_AXIS));
+        contenedor.setBackground(Color.WHITE);
+
+        //titulo
+        JLabel lblTitulo = new JLabel("MENÚ PRINCIPAL");
+        lblTitulo.setFont(new Font("Century Gothic", Font.BOLD, 30));
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblTitulo.setForeground(new Color(20, 20, 20));
+        lblTitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 25, 0));
+
+        contenedor.add(lblTitulo);
+
+        //panel
+        RoundedPanel panel = new RoundedPanel(40, Color.WHITE, new Color(80, 150, 255), 4);
+        panel.setPreferredSize(new Dimension(600, 500));
+        panel.setLayout(new GridBagLayout()); // para organizar los botones en cuadrícula
+        panel.setBackground(Color.WHITE);
+
+        contenedor.add(panel);
+
+
+        add(contenedor);
+
+
+        //botones
+        String[] nombres = {
+                "Clientes", "Productos",
+                "Pedidos", "Reportes",
+                "Colegios", "Proveedores",
+                "Materias Primas", "Uniformes",
+                "Suministros"
+        };
+
+        JButton[] botones = new JButton[nombres.length];
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 20, 15, 20);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        int fila = 0;
+        int columna = 0;
+
+        for (int i = 0; i < nombres.length; i++) {
+            botones[i] = new JButton(nombres[i]);
+            botones[i].setPreferredSize(new Dimension(200, 40));
+            botones[i].setFont(new Font("Century Gothic", Font.BOLD, 22));
+            botones[i].setBackground(new Color(80, 150, 255));
+            botones[i].setForeground(Color.WHITE);
+
+            gbc.gridx = columna;
+            gbc.gridy = fila;
+
+            panel.add(botones[i], gbc);
+
+            columna++;
+            if (columna > 1) {
+                columna = 0;
+                fila++;
+            }
+        }
+
+        // listeners
+        botones[0].addActionListener(e -> new CrudClientes());
+        botones[1].addActionListener(e -> new CrudProductos());
+        botones[2].addActionListener(e -> new CrudPedidos());
+        botones[3].addActionListener(e -> new Reportes());
+        botones[4].addActionListener(e -> new CrudColegios());
+        botones[5].addActionListener(e -> new CrudProveedores());
+        botones[6].addActionListener(e -> new CrudMateriasPrimas());
+        botones[7].addActionListener(e -> new CrudUniformes());
+        botones[8].addActionListener(e -> new CrudSuministros());
 
         setVisible(true);
-
-
     }
 }
