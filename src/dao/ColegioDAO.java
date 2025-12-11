@@ -80,13 +80,14 @@ public class ColegioDAO {
             return false;
         }
     }
+
     public Colegio buscarColegio(int id) {
         String sql = "SELECT * FROM COLEGIO WHERE id_colegio=?";
         try (Connection con = SQLConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 Colegio colegio = new Colegio();
                 colegio.setIdColegio(rs.getInt("id_colegio"));
                 colegio.setNombre(rs.getString("nombre"));
