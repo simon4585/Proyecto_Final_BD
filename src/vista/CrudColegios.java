@@ -7,20 +7,18 @@ import javax.swing.*;
 import modelo.Colegio;
 import utils.SessionManager;
 
-
-
 public class CrudColegios extends JFrame {
 
     private JTextField txtId, txtNombre, txtDireccion, txtTelefono;
+    private ColegioControlador controlador = new ColegioControlador();
 
-    private ColegioControlador controlador = new ColegioControlador(); // controlador
     public CrudColegios() {
 
         setTitle("Gestión de Colegios");
-        setSize(520, 380);
+        setSize(540, 380);
         setLayout(null);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(Color.WHITE); // Fondo blanco
+        getContentPane().setBackground(Color.WHITE);
 
         Font fontLabel = new Font("Century Gothic", Font.BOLD, 18);
         Font fontBtn = new Font("Century Gothic", Font.BOLD, 18);
@@ -46,7 +44,7 @@ public class CrudColegios extends JFrame {
         lblTelefono.setBounds(30, 165, 150, 25);
         add(lblTelefono);
 
-        // ----------------- TEXTFIELDS (alineados) -----------------
+        // ----------------- TEXTFIELDS -----------------
         txtId = new JTextField();
         txtId.setBounds(180, 30, 250, 28);
         add(txtId);
@@ -67,21 +65,29 @@ public class CrudColegios extends JFrame {
         Color azul = new Color(80, 150, 255);
 
         JButton btnGuardar = new JButton("Guardar");
-        btnGuardar.setBounds(40, 240, 130, 35);
+        btnGuardar.setBounds(20, 240, 110, 35);
         btnGuardar.setBackground(azul);
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setFont(fontBtn);
         add(btnGuardar);
 
         JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.setBounds(190, 240, 130, 35);
+        btnBuscar.setBounds(140, 240, 110, 35);
         btnBuscar.setBackground(azul);
         btnBuscar.setForeground(Color.WHITE);
         btnBuscar.setFont(fontBtn);
         add(btnBuscar);
 
+        // ----------- NUEVO BOTÓN ACTUALIZAR -----------
+        JButton btnActualizar = new JButton("Actualizar");
+        btnActualizar.setBounds(260, 240, 125, 35);
+        btnActualizar.setBackground(azul);
+        btnActualizar.setForeground(Color.WHITE);
+        btnActualizar.setFont(fontBtn);
+        add(btnActualizar);
+
         JButton btnEliminar = new JButton("Eliminar");
-        btnEliminar.setBounds(340, 240, 130, 35);
+        btnEliminar.setBounds(400, 240, 110, 35);
         btnEliminar.setBackground(azul);
         btnEliminar.setForeground(Color.WHITE);
         btnEliminar.setFont(fontBtn);
@@ -91,128 +97,152 @@ public class CrudColegios extends JFrame {
         if (SessionManager.esVendedor()) {
             btnGuardar.setEnabled(false);
             btnEliminar.setEnabled(false);
+            btnActualizar.setEnabled(false);
         }
 
         // =======================
-        // ACCIONES
+        // GUARDAR
         // =======================
-
-        // GUARDAR (INSERT or UPDATE if ID provided)
         btnGuardar.addActionListener(e -> {
             String idText = txtId.getText().trim();
-                String nombre = txtNombre.getText().trim();
-                String direccion = txtDireccion.getText().trim();
-                String telefono = txtTelefono.getText().trim();
-                // justo antes de: boolean ok = controlador.insertarColegio(colegio);
-                System.out.println("DBG VIEW -> insertarColegio llamado con:");
-                System.out.println("  nombre  : '" + nombre + "' (len=" + nombre.length() + ")");
-                System.out.println("  direccion: '" + direccion + "' (len=" + direccion.length() + ")");
-                System.out.println("  telefono: '" + telefono + "' (len=" + telefono.length() + ")");
+            String nombre = txtNombre.getText().trim();
+            String direccion = txtDireccion.getText().trim();
+            String telefono = txtTelefono.getText().trim();
 
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El nombre es obligatorio.");
+                return;
+            }
 
-                if (nombre.isEmpty()) {
-                    JOptionPane.showMessageDialog(CrudColegios.this, "El nombre del colegio es obligatorio.", "Validación", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                // Si hay ID, intentamos actualizar; si no, insertar
-                if (!idText.isEmpty()) {
-                    int id;
-                    try {
-                        id = Integer.parseInt(idText);
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(CrudColegios.this, "ID debe ser un número entero.", "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
+            // Si el usuario ingresó ID → se intenta actualizar
+            if (!idText.isEmpty()) {
+                try {
+                    int id = Integer.parseInt(idText);
                     Colegio colegio = new Colegio(id, nombre, direccion, telefono);
-                    boolean ok = controlador.actualizarColegio(colegio);
-                    if (ok) {
-                        JOptionPane.showMessageDialog(CrudColegios.this, "Colegio actualizado correctamente.");
-                    } else {
-                        JOptionPane.showMessageDialog(CrudColegios.this, "No se pudo actualizar el colegio (revise la BD).");
-                    }
 
-                } else {
-                    // Insertar nuevo colegio (ID serial se genera en BD)
-                    Colegio colegio = new Colegio(0, nombre, direccion, telefono); // id temporal 0
-                    boolean ok = controlador.insertarColegio(colegio);
-                    if (ok) {
-                        JOptionPane.showMessageDialog(CrudColegios.this, "Colegio guardado correctamente.");
-                        // opcional: limpiar campos o actualizar lista
-                        txtId.setText("");
-                        txtNombre.setText("");
-                        txtDireccion.setText("");
-                        txtTelefono.setText("");
+                    if (controlador.actualizarColegio(colegio)) {
+                        JOptionPane.showMessageDialog(this, "Colegio actualizado correctamente.");
                     } else {
-                        JOptionPane.showMessageDialog(CrudColegios.this, "Error guardando colegio.");
+                        JOptionPane.showMessageDialog(this, "No se pudo actualizar el colegio.");
                     }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "El ID debe ser un número.");
                 }
+            } else {
+                // Insertar nuevo
+                Colegio colegio = new Colegio(0, nombre, direccion, telefono);
+
+                if (controlador.insertarColegio(colegio)) {
+                    JOptionPane.showMessageDialog(this, "Colegio guardado correctamente.");
+                    txtId.setText("");
+                    txtNombre.setText("");
+                    txtDireccion.setText("");
+                    txtTelefono.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al guardar colegio.");
+                }
+            }
         });
 
-        // BUSCAR por ID
+        // =======================
+        // BUSCAR
+        // =======================
         btnBuscar.addActionListener(e -> {
             String idText = txtId.getText().trim();
-                if (idText.isEmpty()) {
-                    JOptionPane.showMessageDialog(CrudColegios.this, "Ingrese el ID del colegio a buscar.", "Validación", JOptionPane.WARNING_MESSAGE);
-                    return;
+
+            if (idText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese el ID a buscar.");
+                return;
+            }
+
+            try {
+                int id = Integer.parseInt(idText);
+                Colegio c = controlador.buscarColegio(id);
+
+                if (c != null) {
+                    txtNombre.setText(c.getNombre());
+                    txtDireccion.setText(c.getDireccion());
+                    txtTelefono.setText(c.getTelefono());
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró un colegio con ese ID.");
                 }
 
-                int id;
-                try {
-                    id = Integer.parseInt(idText);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(CrudColegios.this, "ID debe ser un número entero.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                try {
-                    Colegio c = controlador.buscarColegio(id);
-                    if (c != null) {
-                        txtNombre.setText(c.getNombre());
-                        txtDireccion.setText(c.getDireccion());
-                        txtTelefono.setText(c.getTelefono());
-                    } else {
-                        JOptionPane.showMessageDialog(CrudColegios.this, "No se encontró un colegio con ese ID.");
-                    }
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(CrudColegios.this, "Error al buscar colegio: " + ex.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
-                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "ID inválido.");
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error BD: " + ex.getMessage());
+            }
         });
 
-        // ELIMINAR por ID
+        // =======================
+        // ACTUALIZAR
+        // =======================
+        btnActualizar.addActionListener(e -> {
+            String idText = txtId.getText().trim();
+            String nombre = txtNombre.getText().trim();
+            String direccion = txtDireccion.getText().trim();
+            String telefono = txtTelefono.getText().trim();
+
+            if (idText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe ingresar un ID para actualizar.");
+                return;
+            }
+
+            try {
+                int id = Integer.parseInt(idText);
+                Colegio c = new Colegio(id, nombre, direccion, telefono);
+
+                boolean ok = controlador.actualizarColegio(c);
+
+                if (ok) {
+                    JOptionPane.showMessageDialog(this, "Colegio actualizado correctamente.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo actualizar el colegio.");
+                }
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "ID inválido.");
+            }
+        });
+
+        // =======================
+        // ELIMINAR
+        // =======================
         btnEliminar.addActionListener(e -> {
             String idText = txtId.getText().trim();
-                if (idText.isEmpty()) {
-                    JOptionPane.showMessageDialog(CrudColegios.this, "Ingrese el ID del colegio a eliminar.", "Validación", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
 
-                int id;
-                try {
-                    id = Integer.parseInt(idText);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(CrudColegios.this, "ID debe ser un número entero.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+            if (idText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese el ID a eliminar.");
+                return;
+            }
 
-                int confirm = JOptionPane.showConfirmDialog(CrudColegios.this, "¿Eliminar colegio con ID " + id + "?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+            try {
+                int id = Integer.parseInt(idText);
+
+                int confirm = JOptionPane.showConfirmDialog(
+                        this,
+                        "¿Seguro que deseas eliminar el colegio?",
+                        "Confirmar eliminación",
+                        JOptionPane.YES_NO_OPTION
+                );
+
                 if (confirm != JOptionPane.YES_OPTION) return;
 
-                try {
-                    boolean ok = controlador.eliminarColegio(id);
-                    if (ok) {
-                        JOptionPane.showMessageDialog(CrudColegios.this, "Colegio eliminado correctamente.");
-                        txtId.setText("");
-                        txtNombre.setText("");
-                        txtDireccion.setText("");
-                        txtTelefono.setText("");
-                    } else {
-                        JOptionPane.showMessageDialog(CrudColegios.this, "No se pudo eliminar (verificar existencia o restricciones).");
-                    }
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(CrudColegios.this, "Error al eliminar colegio: " + ex.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+                if (controlador.eliminarColegio(id)) {
+                    JOptionPane.showMessageDialog(this, "Colegio eliminado.");
+                    txtId.setText("");
+                    txtNombre.setText("");
+                    txtDireccion.setText("");
+                    txtTelefono.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No existe un colegio con ese ID.");
                 }
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "ID inválido.");
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error BD: " + ex.getMessage());
+            }
         });
 
         setVisible(true);

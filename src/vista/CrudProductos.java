@@ -18,7 +18,7 @@ public class CrudProductos extends JFrame {
 
     public CrudProductos() {
         setTitle("Gestión de Productos");
-        setSize(600, 460);
+        setSize(700, 460);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
