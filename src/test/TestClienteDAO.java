@@ -2,10 +2,8 @@ package test;
 
 import dao.ClienteDAO;
 import dao.ColegioDAO;
-import modelo.Cliente;
-import modelo.Colegio;
-
 import java.sql.SQLException;
+import modelo.Colegio;
 
 public class TestClienteDAO {
     public static void main(String[] args) throws SQLException {

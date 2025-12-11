@@ -34,7 +34,7 @@ public class ColegioDAO {
             ps.setString(1, colegio.getNombre());
             ps.setString(2, colegio.getDireccion());
             ps.setString(3, colegio.getTelefono());
-            ps.setInt(4, colegio.getIdColegio());   // 👈 ESTE FALTABA
+            ps.setInt(4, colegio.getIdColegio());
 
             ps.executeUpdate();
             return true;
