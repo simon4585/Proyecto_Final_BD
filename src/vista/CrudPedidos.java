@@ -152,8 +152,6 @@ public class CrudPedidos extends JFrame {
 
         // Deshabilitar botones de modificación para vendedores
         if (SessionManager.esVendedor()) {
-            btnGuardar.setEnabled(false);
-            btnActualizar.setEnabled(false);
             btnEliminar.setEnabled(false);
         }
 

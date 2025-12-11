@@ -1,16 +1,16 @@
 package vista;
 
 import controladores.ReportesControlador;
+import dao.ReportesDAO.ProductosVendidosPorColegio;
 import dto.ProductoPendienteClienteDTO;
 import dto.ProductoPendienteDTO;
-import modelo.Producto;
-import modelo.Colegio;
-import modelo.Uniforme;
-import dao.ReportesDAO.ProductosVendidosPorColegio;
-
-import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import javax.swing.*;
+import modelo.Colegio;
+import modelo.Producto;
+import modelo.Uniforme;
+import utils.SessionManager;
 
 public class Reportes extends JFrame {
 
@@ -42,7 +42,34 @@ public class Reportes extends JFrame {
                 "Total de ventas"
         };
 
+        // Ocultar reportes según rol
+        
+        
         JList<String> lista = new JList<>(reportes);
+        
+        if (SessionManager.esVendedor()) {
+            DefaultListModel<String> modeloVisible = new DefaultListModel<>();
+
+            String[] reportesOriginal = {
+                    "Pedidos pendientes por entregar",              // 0
+                    "Pedidos por cliente",                          // 1 ✔ PERMITIDO
+                    "Productos disponibles",                        // 2 ❌ BLOQUEAR
+                    "Colegios de los que se fabrican uniformes",    // 3
+                    "Colegio las características de su uniforme",   // 4
+                    "Total de productos vendidos por colegio",      // 5 ❌ BLOQUEAR
+                    "Total de ventas"                               // 6 ❌ BLOQUEAR
+            };
+
+            for (int i = 0; i < reportesOriginal.length; i++) {
+                if (i == 2 || i == 5 || i == 6) {
+                    modeloVisible.addElement("⛔ No disponible");
+                } else {
+                    modeloVisible.addElement(reportesOriginal[i]);
+                }
+            }
+
+            lista.setModel(modeloVisible);
+        }
         lista.setFont(new Font("Century Gothic", Font.PLAIN, 16));
 
         JScrollPane scroll = new JScrollPane(lista);
@@ -59,6 +86,19 @@ public class Reportes extends JFrame {
 
         // ------------------ ACCIÓN DEL BOTÓN -------------------
         btnGenerar.addActionListener(e -> generarReporte(lista.getSelectedIndex()));
+
+        lista.addListSelectionListener(e -> {
+        if (!e.getValueIsAdjusting() && SessionManager.esVendedor()) {
+                int idx = lista.getSelectedIndex();
+
+                // bloquear 2, 5 y 6
+                if (idx == 2 || idx == 5 || idx == 6) {
+                    lista.clearSelection();
+                    JOptionPane.showMessageDialog(this, "Reporte no disponible para vendedores");
+                }
+            }
+        });
+
 
         setVisible(true);
     }

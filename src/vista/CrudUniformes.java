@@ -1,11 +1,9 @@
 package vista;
 
 import controladores.UniformeControlador;
-import modelo.Uniforme;
-
-import javax.swing.*;
 import java.awt.*;
 import javax.swing.*;
+import modelo.Uniforme;
 import utils.SessionManager;
 
 public class CrudUniformes extends JFrame {
@@ -246,7 +244,6 @@ public class CrudUniformes extends JFrame {
 
         // Deshabilitar botones de modificación para vendedores
         if (SessionManager.esVendedor()) {
-            btnGuardar.setEnabled(false);
             btnEliminar.setEnabled(false);
         }
 

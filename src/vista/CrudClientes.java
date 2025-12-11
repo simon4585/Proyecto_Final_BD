@@ -113,8 +113,6 @@ public class CrudClientes extends JFrame {
         // =======================
 
         if (SessionManager.esVendedor()) {
-            btnGuardar.setEnabled(false);
-            btnActualizar.setEnabled(false);
             btnEliminar.setEnabled(false);
         }
 
