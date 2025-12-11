@@ -12,19 +12,19 @@ public class ProbarReportes {
     public static void main(String[] args) {
 
         ReportesDAO reportes = new ReportesDAO();
-
+        /*
         System.out.println("========== 1. PRODUCTOS PENDIENTES ==========");
         List<Producto> pendientes = reportes.productosEncargadosPendientes();
         pendientes.forEach(p -> System.out.println(
                 p.getIdProducto() + " - " + p.getTipoProducto() + " - " + p.getDescripcion()
-        ));
-
+        ));*/
+/*
         System.out.println("\n========== 2. PENDIENTES POR CLIENTE ==========");
         List<Producto> porCliente = reportes.productosPendientesPorCliente("1001"); // cambia el dni
         porCliente.forEach(p -> System.out.println(
                 p.getIdProducto() + " - " + p.getTipoProducto() + " - " + p.getDescripcion()
         ));
-
+*/
         System.out.println("\n========== 3. EXISTENCIA CON ENCARGOS ==========");
         List<Producto> existencia = reportes.existenciaConEncargos();
         existencia.forEach(p -> System.out.println(

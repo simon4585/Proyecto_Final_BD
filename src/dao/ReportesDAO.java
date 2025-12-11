@@ -2,6 +2,8 @@ package dao;
 
 
 import conexionBD.SQLConnection;
+import dto.ProductoPendienteClienteDTO;
+import dto.ProductoPendienteDTO;
 import modelo.Producto;
 import modelo.Colegio;
 import modelo.Uniforme;
@@ -13,8 +15,8 @@ import java.math.BigDecimal;
 public class ReportesDAO {
 
     // 1) Listado de productos encargados pendientes por entregar (ordenados por fecha)
-    public List<Producto> productosEncargadosPendientes() {
-        List<Producto> lista = new ArrayList<>();
+    public List<ProductoPendienteDTO>productosEncargadosPendientes() {
+        List<ProductoPendienteDTO> lista = new ArrayList<>();
         String sql = """
             SELECT pr.id_producto, pr.tipo_producto, pr.descripcion, dp.cantidad, p.fecha_pedido
             FROM pedido p
@@ -28,14 +30,14 @@ public class ReportesDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Producto pr = new Producto();
-                pr.setIdProducto(rs.getInt("id_producto"));
-                pr.setTipoProducto(rs.getString("tipo_producto"));
-                pr.setDescripcion(rs.getString("descripcion"));
-                pr.setCantidadExistente(rs.getInt("cantidad"));
+                ProductoPendienteDTO dto = new ProductoPendienteDTO();
+                dto.setIdProducto(rs.getInt("id_producto"));
+                dto.setTipoProducto(rs.getString("tipo_producto"));
+                dto.setDescripcion(rs.getString("descripcion"));
+                dto.setCantidad(rs.getInt("cantidad"));
+                dto.setFechaPedido(rs.getDate("fecha_pedido").toLocalDate());
 
-                // opcional: set cantidad en el modelo si existe
-                lista.add(pr);
+                lista.add(dto);
             }
         } catch (SQLException e) {
             System.out.println("Error reporte pendientes: " + e.getMessage());
@@ -44,8 +46,8 @@ public class ReportesDAO {
     }
 
     // 2) Por cada cliente, listar los productos encargados que no han sido entregados
-    public List<Producto> productosPendientesPorCliente(String dni) {
-        List<Producto> lista = new ArrayList<>();
+    public List<ProductoPendienteClienteDTO> productosPendientesPorCliente(String dni) {
+        List<ProductoPendienteClienteDTO> lista = new ArrayList<>();
         String sql = """
             SELECT pr.id_producto, pr.tipo_producto, pr.descripcion, dp.cantidad, p.id_pedido
             FROM pedido p
@@ -59,12 +61,13 @@ public class ReportesDAO {
             ps.setString(1, dni);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Producto pr = new Producto();
-                pr.setIdProducto(rs.getInt("id_producto"));
-                pr.setTipoProducto(rs.getString("tipo_producto"));
-                pr.setDescripcion(rs.getString("descripcion"));
-                // si quieres, set cantidad con un setter en Producto
-                lista.add(pr);
+                ProductoPendienteClienteDTO dto = new ProductoPendienteClienteDTO();
+                dto.setIdProducto(rs.getInt("id_producto"));
+                dto.setTipoProducto(rs.getString("tipo_producto"));
+                dto.setDescripcion(rs.getString("descripcion"));
+                dto.setCantidad(rs.getInt("cantidad"));
+                dto.setIdPedido(rs.getInt("id_pedido"));
+                lista.add(dto);
             }
         } catch (SQLException e) {
             System.out.println("Error reporte por cliente: " + e.getMessage());
