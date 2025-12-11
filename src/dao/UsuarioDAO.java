@@ -1,6 +1,5 @@
 package dao;
 
-
 import conexionBD.SQLConnection;
 import modelo.Usuario;
 
@@ -11,7 +10,7 @@ import java.util.List;
 public class UsuarioDAO {
 
     public boolean insertarUsuario(Usuario u) {
-        String sql = "INSERT INTO usuario(username, password, rol) VALUES (?,?,?)";
+        String sql = "INSERT INTO usuarios(username, password, rol) VALUES (?,?,?)";
         try (Connection con = SQLConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, u.getUsername());
@@ -26,11 +25,12 @@ public class UsuarioDAO {
     }
 
     public Usuario buscarUsuario(int id) {
-        String sql = "SELECT * FROM usuario WHERE username=?";
+        String sql = "SELECT * FROM usuarios WHERE id_usuario=?";
         try (Connection con = SQLConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
                 Usuario u = new Usuario();
                 u.setIdUsuario(rs.getInt("id_usuario"));
@@ -46,14 +46,14 @@ public class UsuarioDAO {
     }
 
     public boolean validarLogin(String username, String password) {
-        String sql = "SELECT password FROM usuario WHERE username=?";
+        String sql = "SELECT password FROM usuarios WHERE username=?";
         try (Connection con = SQLConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 String passBD = rs.getString("password");
-                return password.equals(passBD); // simple; podrías usar hashing
+                return password.equals(passBD);
             }
         } catch (SQLException e) {
             System.out.println("Error validar login: " + e.getMessage());
@@ -63,10 +63,11 @@ public class UsuarioDAO {
 
     public List<Usuario> listarUsuarios() {
         List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT * FROM usuario";
+        String sql = "SELECT * FROM usuarios";
         try (Connection con = SQLConnection.getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
+
             while (rs.next()) {
                 Usuario u = new Usuario();
                 u.setIdUsuario(rs.getInt("id_usuario"));
@@ -80,15 +81,14 @@ public class UsuarioDAO {
         }
         return lista;
     }
-    public boolean eliminarUsuario(int idUsuario) {
-        String sql = "DELETE FROM usuario WHERE id_usuario = ?";
 
+    public boolean eliminarUsuario(int idUsuario) {
+        String sql = "DELETE FROM usuarios WHERE id_usuario = ?";
         try (Connection con = SQLConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, idUsuario);
-            int filas = ps.executeUpdate();
-            return filas > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.out.println("Error al eliminar usuario: " + e.getMessage());
@@ -97,7 +97,7 @@ public class UsuarioDAO {
     }
 
     public boolean actualizarUsuario(int idUsuario, Usuario nuevo) {
-        String sql = "UPDATE usuario SET username = ?, password = ?, rol = ? WHERE id_usuario = ?";
+        String sql = "UPDATE usuarios SET username = ?, password = ?, rol = ? WHERE id_usuario = ?";
 
         try (Connection con = SQLConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -107,18 +107,16 @@ public class UsuarioDAO {
             ps.setString(3, nuevo.getRol());
             ps.setInt(4, idUsuario);
 
-            int filas = ps.executeUpdate();
-            return filas > 0; // true si se actualizó al menos 1 usuario
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.out.println("Error al actualizar usuario: " + e.getMessage());
             return false;
         }
-
     }
-    public Usuario login(String username, String password) {
-        String sql = "SELECT * FROM usuario WHERE username=? AND password=?";
 
+    public Usuario login(String username, String password) {
+        String sql = "SELECT * FROM usuarios WHERE username=? AND password=?";
         try (Connection con = SQLConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -132,16 +130,13 @@ public class UsuarioDAO {
                 u.setUsername(rs.getString("username"));
                 u.setPassword(rs.getString("password"));
                 u.setRol(rs.getString("rol"));
-                return u;   // LOGIN EXITOSO
+                return u;
             }
 
         } catch (SQLException e) {
             System.out.println("Error login: " + e.getMessage());
         }
 
-        return null; // LOGIN FALLIDO
+        return null;
     }
-
-
 }
-

@@ -1,7 +1,7 @@
 package vista;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class Menu extends JFrame {
 
@@ -45,7 +45,8 @@ public class Menu extends JFrame {
                 "Clientes", "Productos",
                 "Pedidos", "Reportes",
                 "Colegios", "Proveedores",
-                "Materias Primas"
+                "Materias Primas", "Uniformes",
+                "Suministros"
         };
 
         JButton[] botones = new JButton[nombres.length];
@@ -77,6 +78,7 @@ public class Menu extends JFrame {
             }
         }
 
+        // listeners
         botones[0].addActionListener(e -> new CrudClientes());
         botones[1].addActionListener(e -> new CrudProductos());
         botones[2].addActionListener(e -> new CrudPedidos());
@@ -84,6 +86,8 @@ public class Menu extends JFrame {
         botones[4].addActionListener(e -> new CrudColegios());
         botones[5].addActionListener(e -> new CrudProveedores());
         botones[6].addActionListener(e -> new CrudMateriasPrimas());
+        botones[7].addActionListener(e -> new CrudUniformes());
+        botones[8].addActionListener(e -> new CrudSuministros());
 
         setVisible(true);
     }

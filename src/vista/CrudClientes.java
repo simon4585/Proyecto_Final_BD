@@ -1,16 +1,21 @@
 package vista;
 
-import javax.swing.*;
+import controladores.ClienteControlador;
 import java.awt.*;
+import java.sql.SQLException;
+import javax.swing.*;
+import modelo.Cliente;
+import utils.SessionManager;
 
 public class CrudClientes extends JFrame {
 
     private JTextField txtDocumento, txtNombre, txtTelefono;
+    private ClienteControlador controlador = new ClienteControlador();
 
     public CrudClientes() {
 
         setTitle("Gestión de Clientes - Urban Stitch");
-        setSize(500, 380);
+        setSize(620, 400);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
@@ -38,7 +43,6 @@ public class CrudClientes extends JFrame {
         gbc.gridx = 1;
         add(txtDocumento, gbc);
 
-
         JLabel lblNombre = new JLabel("Nombre:");
         lblNombre.setFont(fuente);
         gbc.gridx = 0;
@@ -51,8 +55,8 @@ public class CrudClientes extends JFrame {
         gbc.gridx = 1;
         add(txtNombre, gbc);
 
-
         JLabel lblTel = new JLabel("Teléfono:");
+        lblTel = new JLabel("Teléfono:");
         lblTel.setFont(fuente);
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -64,13 +68,14 @@ public class CrudClientes extends JFrame {
         gbc.gridx = 1;
         add(txtTelefono, gbc);
 
+
         // =======================
         // Botones
         // =======================
 
         JPanel panelBotones = new JPanel();
         panelBotones.setBackground(Color.WHITE);
-        panelBotones.setLayout(new GridLayout(1, 3, 15, 0));
+        panelBotones.setLayout(new GridLayout(1, 4, 15, 0));
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.setFont(fuenteBoton);
@@ -82,6 +87,11 @@ public class CrudClientes extends JFrame {
         btnBuscar.setBackground(new Color(80, 150, 255));
         btnBuscar.setForeground(Color.WHITE);
 
+        JButton btnActualizar = new JButton("Actualizar");
+        btnActualizar.setFont(fuenteBoton);
+        btnActualizar.setBackground(new Color(80, 150, 255));
+        btnActualizar.setForeground(Color.WHITE);
+
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.setFont(fuenteBoton);
         btnEliminar.setBackground(new Color(80, 150, 255));
@@ -89,6 +99,7 @@ public class CrudClientes extends JFrame {
 
         panelBotones.add(btnGuardar);
         panelBotones.add(btnBuscar);
+        panelBotones.add(btnActualizar);
         panelBotones.add(btnEliminar);
 
         gbc.gridx = 0;
@@ -96,6 +107,101 @@ public class CrudClientes extends JFrame {
         gbc.gridwidth = 2;
         gbc.insets = new Insets(20, 20, 20, 20);
         add(panelBotones, gbc);
+
+        // =======================
+        // Permisos de vendedor
+        // =======================
+
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnActualizar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
+
+        // =======================
+        // ACCIONES
+        // =======================
+
+        // GUARDAR
+        btnGuardar.addActionListener(e -> {
+            String dni = txtDocumento.getText();
+            String nombre = txtNombre.getText();
+            String tel = txtTelefono.getText();
+
+            if (dni.isEmpty() || nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Documento y Nombre son obligatorios.");
+                return;
+            }
+
+            Cliente c = new Cliente(dni, nombre, tel);
+
+            if (controlador.insertarCliente(c)) {
+                JOptionPane.showMessageDialog(null, "Cliente registrado con éxito.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al registrar cliente.");
+            }
+        });
+
+        // BUSCAR
+        btnBuscar.addActionListener(e -> {
+            String dni = txtDocumento.getText();
+
+            if (dni.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Ingresa un documento para buscar.");
+                return;
+            }
+
+            Cliente c = controlador.buscarCliente(dni);
+
+            if (c != null) {
+                txtNombre.setText(c.getNombre());
+                txtTelefono.setText(c.getTelefono());
+            } else {
+                JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
+            }
+        });
+
+        // ACTUALIZAR (nuevo)
+        btnActualizar.addActionListener(e -> {
+            String dni = txtDocumento.getText();
+            String nombre = txtNombre.getText();
+            String tel = txtTelefono.getText();
+
+            if (dni.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Primero busca un cliente.");
+                return;
+            }
+
+            Cliente c = new Cliente(dni, nombre, tel);
+
+            if (controlador.actualizarCliente(c)) {
+                JOptionPane.showMessageDialog(null, "Cliente actualizado con éxito.");
+            } else {
+                JOptionPane.showMessageDialog(null, "No se pudo actualizar el cliente.");
+            }
+        });
+
+        // ELIMINAR
+        btnEliminar.addActionListener(e -> {
+            String dni = txtDocumento.getText();
+
+            if (dni.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Ingresa un documento para eliminar.");
+                return;
+            }
+
+            try {
+                if (controlador.eliminarCliente(dni)) {
+                    JOptionPane.showMessageDialog(null, "Cliente eliminado.");
+                    txtNombre.setText("");
+                    txtTelefono.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(null, "No existe un cliente con ese documento.");
+                }
+            } catch (HeadlessException | SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
+            }
+        });
 
         setVisible(true);
     }

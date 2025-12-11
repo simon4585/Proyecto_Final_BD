@@ -34,7 +34,7 @@ public class ColegioDAO {
             ps.setString(1, colegio.getNombre());
             ps.setString(2, colegio.getDireccion());
             ps.setString(3, colegio.getTelefono());
-            ps.setInt(4, colegio.getIdColegio());   // 👈 ESTE FALTABA
+            ps.setInt(4, colegio.getIdColegio());
 
             ps.executeUpdate();
             return true;
@@ -80,13 +80,14 @@ public class ColegioDAO {
             return false;
         }
     }
+
     public Colegio buscarColegio(int id) {
         String sql = "SELECT * FROM COLEGIO WHERE id_colegio=?";
         try (Connection con = SQLConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 Colegio colegio = new Colegio();
                 colegio.setIdColegio(rs.getInt("id_colegio"));
                 colegio.setNombre(rs.getString("nombre"));

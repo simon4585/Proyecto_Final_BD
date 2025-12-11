@@ -1,11 +1,9 @@
 package test;
 
-import dao.ClienteDAO;
+//import dao.ClienteDAO;
 import dao.ColegioDAO;
-import modelo.Cliente;
-import modelo.Colegio;
-
 import java.sql.SQLException;
+import modelo.Colegio;
 
 public class TestClienteDAO {
     public static void main(String[] args) throws SQLException {
@@ -13,6 +11,7 @@ public class TestClienteDAO {
         ColegioDAO dao = new ColegioDAO();
 
         // 1️⃣ Insertar un cliente
+        @SuppressWarnings("unused")
         Colegio nuevoColegio = new Colegio(3,"Antonio nariño", "cra11#312","12341314");
         /*
         boolean insertado = dao.insertarColegio(nuevo);

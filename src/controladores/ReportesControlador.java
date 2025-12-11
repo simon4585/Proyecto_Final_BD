@@ -2,6 +2,8 @@ package controladores;
 
 
 import dao.ReportesDAO;
+import dto.ProductoPendienteClienteDTO;
+import dto.ProductoPendienteDTO;
 import modelo.Colegio;
 import modelo.Pedido;
 import modelo.Producto;
@@ -18,30 +20,28 @@ public class ReportesControlador {
         dao = new ReportesDAO();
     }
 
-    // ---------------------------
-    // 1. Productos pendientes por entregar (ordenados por fecha)
-    // ---------------------------
-    public List<Producto> productosEncargadosPendientes() {
+    // 1. Listado de productos encargados pendientes por entregar (ordenados por fecha)
+    public List<ProductoPendienteDTO> productosPendientes() {
         return dao.productosEncargadosPendientes();
     }
 
-    // ---------------------------
-    // 2. Productos encargados por cliente
-    // ---------------------------
-    public List<Producto> productosPendientesPorCliente(String dni) {
+
+
+    // 2. Por cada cliente, listar los productos encargados que no han sido entregados
+
+    public List<ProductoPendienteClienteDTO> productosPendientesPorCliente(String dni) {
         return dao.productosPendientesPorCliente(dni);
     }
 
-    // ---------------------------
-    // 3. Cantidad en existencia descontando encargados
-    // ---------------------------
+
+    // 3.Por cada producto, cantidad en existencia descontando los que están encargados
+
     public List<Producto> existenciaConEncargos() {
         return dao.existenciaConEncargos();
     }
 
-    // ---------------------------
-    // 4. Listado de colegios en los que se fabrican uniforme
-    // ---------------------------
+    // 4.Listado de colegios de los que se fabrican uniformes
+
     public List<Colegio> listadoColegios() {
         return dao.listadoColegios();
     }
@@ -49,7 +49,7 @@ public class ReportesControlador {
 
     // 5. Dado un colegio las características de su uniforme
 
-    public List<Uniforme> caracteristicasUniformePorColegio(int idColegio) {
+    public List<Uniforme> uniformesPorColegio(int idColegio) {
         return dao.uniformesPorColegio(idColegio);
     }
 
@@ -61,7 +61,7 @@ public class ReportesControlador {
     }
 
 
-    // 7. Calcular el total de productos vendidos por colegio
+    // 7. Calcular el total de ventas (dinero)
     public BigDecimal totalVentas() {
         return dao.totalVentas();
     }

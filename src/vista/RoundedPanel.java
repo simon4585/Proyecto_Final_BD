@@ -1,14 +1,14 @@
 package vista;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class RoundedPanel extends JPanel {
 
-    private int radius;
-    private Color backgroundColor;
-    private Color borderColor;
-    private int borderSize;
+    private final int radius;
+    private final Color backgroundColor;
+    private final Color borderColor;
+    private final int borderSize;
 
     public RoundedPanel(int radius, Color bgColor, Color borderColor, int borderSize) {
         this.radius = radius;
