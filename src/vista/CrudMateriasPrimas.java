@@ -121,7 +121,6 @@ public class CrudMateriasPrimas extends JFrame {
 
         // Deshabilitar botones de modificación para vendedores
         if (SessionManager.esVendedor()) {
-            btnGuardar.setEnabled(false);
             btnEliminar.setEnabled(false);
         }
 

@@ -10,12 +10,12 @@ import utils.SessionManager;
 public class CrudClientes extends JFrame {
 
     private JTextField txtDocumento, txtNombre, txtTelefono;
-    private ClienteControlador controlador = new ClienteControlador(); // ← CONTROLADOR
+    private ClienteControlador controlador = new ClienteControlador();
 
     public CrudClientes() {
 
         setTitle("Gestión de Clientes - Urban Stitch");
-        setSize(500, 380);
+        setSize(620, 400);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
@@ -56,6 +56,7 @@ public class CrudClientes extends JFrame {
         add(txtNombre, gbc);
 
         JLabel lblTel = new JLabel("Teléfono:");
+        lblTel = new JLabel("Teléfono:");
         lblTel.setFont(fuente);
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -74,7 +75,7 @@ public class CrudClientes extends JFrame {
 
         JPanel panelBotones = new JPanel();
         panelBotones.setBackground(Color.WHITE);
-        panelBotones.setLayout(new GridLayout(1, 3, 15, 0));
+        panelBotones.setLayout(new GridLayout(1, 4, 15, 0));
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.setFont(fuenteBoton);
@@ -86,6 +87,11 @@ public class CrudClientes extends JFrame {
         btnBuscar.setBackground(new Color(80, 150, 255));
         btnBuscar.setForeground(Color.WHITE);
 
+        JButton btnActualizar = new JButton("Actualizar");
+        btnActualizar.setFont(fuenteBoton);
+        btnActualizar.setBackground(new Color(80, 150, 255));
+        btnActualizar.setForeground(Color.WHITE);
+
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.setFont(fuenteBoton);
         btnEliminar.setBackground(new Color(80, 150, 255));
@@ -93,6 +99,7 @@ public class CrudClientes extends JFrame {
 
         panelBotones.add(btnGuardar);
         panelBotones.add(btnBuscar);
+        panelBotones.add(btnActualizar);
         panelBotones.add(btnEliminar);
 
         gbc.gridx = 0;
@@ -101,9 +108,11 @@ public class CrudClientes extends JFrame {
         gbc.insets = new Insets(20, 20, 20, 20);
         add(panelBotones, gbc);
 
-        // Deshabilitar botones de modificación para vendedores
+        // =======================
+        // Permisos de vendedor
+        // =======================
+
         if (SessionManager.esVendedor()) {
-            btnGuardar.setEnabled(false);
             btnEliminar.setEnabled(false);
         }
 
@@ -147,6 +156,26 @@ public class CrudClientes extends JFrame {
                 txtTelefono.setText(c.getTelefono());
             } else {
                 JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
+            }
+        });
+
+        // ACTUALIZAR (nuevo)
+        btnActualizar.addActionListener(e -> {
+            String dni = txtDocumento.getText();
+            String nombre = txtNombre.getText();
+            String tel = txtTelefono.getText();
+
+            if (dni.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Primero busca un cliente.");
+                return;
+            }
+
+            Cliente c = new Cliente(dni, nombre, tel);
+
+            if (controlador.actualizarCliente(c)) {
+                JOptionPane.showMessageDialog(null, "Cliente actualizado con éxito.");
+            } else {
+                JOptionPane.showMessageDialog(null, "No se pudo actualizar el cliente.");
             }
         });
 

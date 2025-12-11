@@ -1,12 +1,10 @@
 package vista;
 
 import controladores.ProductoControlador;
-import modelo.Producto;
-
-import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
 import javax.swing.*;
+import modelo.Producto;
 import utils.SessionManager;
 
 public class CrudProductos extends JFrame {
@@ -18,7 +16,7 @@ public class CrudProductos extends JFrame {
 
     public CrudProductos() {
         setTitle("Gestión de Productos");
-        setSize(600, 460);
+        setSize(700, 460);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -204,8 +202,6 @@ public class CrudProductos extends JFrame {
 
         // Deshabilitar botones de modificación para vendedores
         if (SessionManager.esVendedor()) {
-            btnGuardar.setEnabled(false);
-            btnEditar.setEnabled(false);
             btnEliminar.setEnabled(false);
         }
 

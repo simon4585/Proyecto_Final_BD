@@ -1,11 +1,9 @@
 package vista;
 
 import controladores.SuministroControlador;
-import modelo.Suministro;
-
-import javax.swing.*;
 import java.awt.*;
 import javax.swing.*;
+import modelo.Suministro;
 import utils.SessionManager;
 
 public class CrudSuministros extends JFrame {
@@ -227,7 +225,6 @@ public class CrudSuministros extends JFrame {
 
         // Deshabilitar botones de modificación para vendedores
         if (SessionManager.esVendedor()) {
-            btnGuardar.setEnabled(false);
             btnEliminar.setEnabled(false);
         }
 
