@@ -1,12 +1,12 @@
 package controladores;
 
 import dao.UsuarioDAO;
-import modelo.Usuario;
 import java.util.List;
+import modelo.Usuario;
 
 public class UsuarioControlador {
 
-    private UsuarioDAO dao = new UsuarioDAO();
+    private final UsuarioDAO dao = new UsuarioDAO();
 
     public Usuario login(String user, String pass) {
         return dao.login(user, pass); }

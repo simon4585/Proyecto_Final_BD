@@ -5,6 +5,8 @@ import modelo.Suministro;
 
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import utils.SessionManager;
 
 public class CrudSuministros extends JFrame {
 
@@ -222,6 +224,12 @@ public class CrudSuministros extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
             }
         });
+
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
 
         setVisible(true);
     }

@@ -1,11 +1,11 @@
 package vista;
 
 import controladores.MateriaPrimaControlador;
-import modelo.MateriaPrima;
-
-import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
+import javax.swing.*;
+import modelo.MateriaPrima;
+import utils.SessionManager;
 
 public class CrudMateriasPrimas extends JFrame {
 
@@ -118,6 +118,12 @@ public class CrudMateriasPrimas extends JFrame {
         btnEliminar.setForeground(Color.WHITE);
         btnEliminar.setFont(fontBtn);
         add(btnEliminar);
+
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
 
         // ---------------- EVENTOS -------------------
 

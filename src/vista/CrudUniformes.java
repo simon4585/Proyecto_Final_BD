@@ -5,6 +5,8 @@ import modelo.Uniforme;
 
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import utils.SessionManager;
 
 public class CrudUniformes extends JFrame {
 
@@ -241,6 +243,12 @@ public class CrudUniformes extends JFrame {
         btnBuscar.addActionListener(e -> buscarUniforme());
         btnActualizar.addActionListener(e -> actualizarUniforme());
         btnEliminar.addActionListener(e -> eliminarUniforme());
+
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
 
         setVisible(true);
     }

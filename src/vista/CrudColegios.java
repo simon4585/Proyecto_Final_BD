@@ -1,13 +1,11 @@
 package vista;
 
 import controladores.ColegioControlador;
-import modelo.Colegio;
-
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import javax.swing.*;
+import modelo.Colegio;
+import utils.SessionManager;
 
 
 
@@ -89,15 +87,19 @@ public class CrudColegios extends JFrame {
         btnEliminar.setFont(fontBtn);
         add(btnEliminar);
 
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
+
         // =======================
         // ACCIONES
         // =======================
 
         // GUARDAR (INSERT or UPDATE if ID provided)
-        btnGuardar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String idText = txtId.getText().trim();
+        btnGuardar.addActionListener(e -> {
+            String idText = txtId.getText().trim();
                 String nombre = txtNombre.getText().trim();
                 String direccion = txtDireccion.getText().trim();
                 String telefono = txtTelefono.getText().trim();
@@ -146,14 +148,11 @@ public class CrudColegios extends JFrame {
                         JOptionPane.showMessageDialog(CrudColegios.this, "Error guardando colegio.");
                     }
                 }
-            }
         });
 
         // BUSCAR por ID
-        btnBuscar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String idText = txtId.getText().trim();
+        btnBuscar.addActionListener(e -> {
+            String idText = txtId.getText().trim();
                 if (idText.isEmpty()) {
                     JOptionPane.showMessageDialog(CrudColegios.this, "Ingrese el ID del colegio a buscar.", "Validación", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -179,14 +178,11 @@ public class CrudColegios extends JFrame {
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(CrudColegios.this, "Error al buscar colegio: " + ex.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
                 }
-            }
         });
 
         // ELIMINAR por ID
-        btnEliminar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String idText = txtId.getText().trim();
+        btnEliminar.addActionListener(e -> {
+            String idText = txtId.getText().trim();
                 if (idText.isEmpty()) {
                     JOptionPane.showMessageDialog(CrudColegios.this, "Ingrese el ID del colegio a eliminar.", "Validación", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -217,7 +213,6 @@ public class CrudColegios extends JFrame {
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(CrudColegios.this, "Error al eliminar colegio: " + ex.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
                 }
-            }
         });
 
         setVisible(true);

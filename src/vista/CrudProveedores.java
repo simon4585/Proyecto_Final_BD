@@ -5,6 +5,8 @@ import modelo.Proveedor;
 
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import utils.SessionManager;
 
 public class CrudProveedores extends JFrame {
 
@@ -12,6 +14,7 @@ public class CrudProveedores extends JFrame {
     private JButton btnGuardar, btnBuscar, btnActualizar, btnEliminar;
 
     private ProveedorControlador controlador = new ProveedorControlador();
+    private final JTextField txtNit, txtNombre, txtDireccion, txtTelefono, txtContacto;
 
     public CrudProveedores() {
         // --- CONFIGURACIÓN GENERAL ---
@@ -254,6 +257,11 @@ public class CrudProveedores extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
             }
         });
+
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+        }
 
         setVisible(true);
     }

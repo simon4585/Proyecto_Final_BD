@@ -6,9 +6,12 @@ import modelo.Producto;
 import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
+import javax.swing.*;
+import utils.SessionManager;
 
 public class CrudProductos extends JFrame {
 
+    private final  JTextField txtCodigo, txtDescripcion, txtTalla, txtPrecio, txtCantidad;
     private JTextField txtCodigo, txtDescripcion, txtTalla, txtPrecio, txtCantidad;
     private JComboBox<String> cbSexo;
     private JComboBox<String> cbTipo;
@@ -199,6 +202,13 @@ public class CrudProductos extends JFrame {
         btnBuscar.addActionListener(e -> buscarProducto());
         btnEditar.addActionListener(e -> actualizarProducto());
         btnEliminar.addActionListener(e -> eliminarProducto());
+
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEditar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
 
         setVisible(true);
     }

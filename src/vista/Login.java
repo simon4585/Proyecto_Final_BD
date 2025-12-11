@@ -1,12 +1,16 @@
 package vista;
 
-import javax.swing.*;
+import controladores.UsuarioControlador;
 import java.awt.*;
+import javax.swing.*;
+import modelo.Usuario;
+import utils.SessionManager;
 
 public class Login extends JFrame {
 
     private JTextField txtUsuario;
     private JPasswordField txtClave;
+    private UsuarioControlador controlador = new UsuarioControlador();
 
     public Login() {
 
@@ -67,8 +71,33 @@ public class Login extends JFrame {
         panel.add(btnIngresar);
 
         btnIngresar.addActionListener(e -> {
-            new Menu();
-            dispose();
+            String username = txtUsuario.getText().trim();
+            String password = new String(txtClave.getPassword());
+
+            System.out.println("DEBUG: Intentando login con usuario: '" + username + "'");
+            
+            if (username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor ingrese usuario y contraseña", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                Usuario usuario = controlador.login(username, password);
+                System.out.println("DEBUG: Resultado login: " + (usuario != null ? "Exitoso - " + usuario.getRol() : "Fallido"));
+
+                if (usuario != null) {
+                    SessionManager.setUsuarioActual(usuario);
+                    JOptionPane.showMessageDialog(this, "Bienvenido " + usuario.getUsername() + " (" + usuario.getRol() + ")", "Login Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                    SwingUtilities.invokeLater(Menu::new);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de Login", JOptionPane.ERROR_MESSAGE);
+                    txtClave.setText("");
+                }
+            } catch (HeadlessException ex) {
+                System.err.println("ERROR: Excepción durante login: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         setVisible(true);

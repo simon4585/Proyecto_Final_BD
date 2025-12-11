@@ -1,12 +1,11 @@
 package vista;
 
 import controladores.ClienteControlador;
-import modelo.Cliente;
-
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import javax.swing.*;
+import modelo.Cliente;
+import utils.SessionManager;
 
 public class CrudClientes extends JFrame {
 
@@ -102,80 +101,74 @@ public class CrudClientes extends JFrame {
         gbc.insets = new Insets(20, 20, 20, 20);
         add(panelBotones, gbc);
 
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
+
         // =======================
         // ACCIONES
         // =======================
 
         // GUARDAR
-        btnGuardar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        btnGuardar.addActionListener(e -> {
+            String dni = txtDocumento.getText();
+            String nombre = txtNombre.getText();
+            String tel = txtTelefono.getText();
 
-                String dni = txtDocumento.getText();
-                String nombre = txtNombre.getText();
-                String tel = txtTelefono.getText();
+            if (dni.isEmpty() || nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Documento y Nombre son obligatorios.");
+                return;
+            }
 
-                if (dni.isEmpty() || nombre.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Documento y Nombre son obligatorios.");
-                    return;
-                }
+            Cliente c = new Cliente(dni, nombre, tel);
 
-                Cliente c = new Cliente(dni, nombre, tel);
-
-                if (controlador.insertarCliente(c)) {
-                    JOptionPane.showMessageDialog(null, "Cliente registrado con éxito.");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error al registrar cliente.");
-                }
+            if (controlador.insertarCliente(c)) {
+                JOptionPane.showMessageDialog(null, "Cliente registrado con éxito.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al registrar cliente.");
             }
         });
 
         // BUSCAR
-        btnBuscar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        btnBuscar.addActionListener(e -> {
+            String dni = txtDocumento.getText();
 
-                String dni = txtDocumento.getText();
+            if (dni.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Ingresa un documento para buscar.");
+                return;
+            }
 
-                if (dni.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Ingresa un documento para buscar.");
-                    return;
-                }
+            Cliente c = controlador.buscarCliente(dni);
 
-                Cliente c = controlador.buscarCliente(dni);
-
-                if (c != null) {
-                    txtNombre.setText(c.getNombre());
-                    txtTelefono.setText(c.getTelefono());
-                } else {
-                    JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
-                }
+            if (c != null) {
+                txtNombre.setText(c.getNombre());
+                txtTelefono.setText(c.getTelefono());
+            } else {
+                JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
             }
         });
 
         // ELIMINAR
-        btnEliminar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        btnEliminar.addActionListener(e -> {
+            String dni = txtDocumento.getText();
 
-                String dni = txtDocumento.getText();
+            if (dni.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Ingresa un documento para eliminar.");
+                return;
+            }
 
-                if (dni.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Ingresa un documento para eliminar.");
-                    return;
+            try {
+                if (controlador.eliminarCliente(dni)) {
+                    JOptionPane.showMessageDialog(null, "Cliente eliminado.");
+                    txtNombre.setText("");
+                    txtTelefono.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(null, "No existe un cliente con ese documento.");
                 }
-
-                try {
-                    if (controlador.eliminarCliente(dni)) {
-                        JOptionPane.showMessageDialog(null, "Cliente eliminado.");
-                        txtNombre.setText("");
-                        txtTelefono.setText("");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "No existe un cliente con ese documento.");
-                    }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
-                }
+            } catch (HeadlessException | SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
             }
         });
 

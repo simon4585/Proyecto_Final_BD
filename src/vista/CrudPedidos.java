@@ -1,12 +1,12 @@
 package vista;
 
 import controladores.PedidoControlador;
-import modelo.Pedido;
-
-import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import javax.swing.*;
+import modelo.Pedido;
+import utils.SessionManager;
 
 public class CrudPedidos extends JFrame {
 
@@ -150,6 +150,12 @@ public class CrudPedidos extends JFrame {
         gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
         add(botones, gbc);
 
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnActualizar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
 
         // ==============================
         // ACCIONES
