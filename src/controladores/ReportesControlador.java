@@ -18,30 +18,28 @@ public class ReportesControlador {
         dao = new ReportesDAO();
     }
 
-    // ---------------------------
     // 1. Productos pendientes por entregar (ordenados por fecha)
-    // ---------------------------
+
     public List<Producto> productosEncargadosPendientes() {
         return dao.productosEncargadosPendientes();
     }
 
-    // ---------------------------
+
     // 2. Productos encargados por cliente
-    // ---------------------------
+
     public List<Producto> productosPendientesPorCliente(String dni) {
         return dao.productosPendientesPorCliente(dni);
     }
 
-    // ---------------------------
+
     // 3. Cantidad en existencia descontando encargados
-    // ---------------------------
+
     public List<Producto> existenciaConEncargos() {
         return dao.existenciaConEncargos();
     }
 
-    // ---------------------------
     // 4. Listado de colegios en los que se fabrican uniforme
-    // ---------------------------
+
     public List<Colegio> listadoColegios() {
         return dao.listadoColegios();
     }
