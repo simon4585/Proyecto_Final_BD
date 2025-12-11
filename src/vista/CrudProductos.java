@@ -117,7 +117,7 @@ public class CrudProductos extends JFrame {
         btnEliminar.setFont(fontBtn);
         add(btnEliminar);
 
-        // Deshabilitar botones para vendedores
+        // Deshabilitar botones de modificación para vendedores
         if (SessionManager.esVendedor()) {
             btnGuardar.setEnabled(false);
             btnEditar.setEnabled(false);

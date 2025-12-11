@@ -105,6 +105,12 @@ public class CrudMateriasPrimas extends JFrame {
         btnEliminar.setFont(fontBtn);
         add(btnEliminar);
 
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
+
         // ---------------- EVENTOS -------------------
 
         // GUARDAR / ACTUALIZAR
@@ -156,12 +162,6 @@ public class CrudMateriasPrimas extends JFrame {
 
         // BUSCAR AUTOMÁTICO AL SALIR DEL CAMPO CÓDIGO
         txtCodigo.addActionListener(e -> buscar());
-
-        // Deshabilitar botones para vendedores
-        if (SessionManager.esVendedor()) {
-            btnGuardar.setEnabled(false);
-            btnEliminar.setEnabled(false);
-        }
 
         setVisible(true);
     }

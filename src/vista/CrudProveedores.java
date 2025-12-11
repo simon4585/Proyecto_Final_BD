@@ -95,7 +95,7 @@ public class CrudProveedores extends JFrame {
         btnBuscar.setFocusPainted(false);
         add(btnBuscar);
 
-        // Deshabilitar botones para vendedores
+        // Deshabilitar botones de modificación para vendedores
         if (SessionManager.esVendedor()) {
             btnGuardar.setEnabled(false);
         }

@@ -87,6 +87,12 @@ public class CrudColegios extends JFrame {
         btnEliminar.setFont(fontBtn);
         add(btnEliminar);
 
+        // Deshabilitar botones de modificación para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
+
         // =======================
         // ACCIONES
         // =======================
@@ -208,12 +214,6 @@ public class CrudColegios extends JFrame {
                     JOptionPane.showMessageDialog(CrudColegios.this, "Error al eliminar colegio: " + ex.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
                 }
         });
-
-        // Deshabilitar botones para vendedores
-        if (SessionManager.esVendedor()) {
-            btnGuardar.setEnabled(false);
-            btnEliminar.setEnabled(false);
-        }
 
         setVisible(true);
     }

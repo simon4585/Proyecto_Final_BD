@@ -101,7 +101,7 @@ public class CrudClientes extends JFrame {
         gbc.insets = new Insets(20, 20, 20, 20);
         add(panelBotones, gbc);
 
-        // Deshabilitar botones para vendedores
+        // Deshabilitar botones de modificación para vendedores
         if (SessionManager.esVendedor()) {
             btnGuardar.setEnabled(false);
             btnEliminar.setEnabled(false);

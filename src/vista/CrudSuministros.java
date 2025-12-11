@@ -157,7 +157,7 @@ public class CrudSuministros extends JFrame {
         wrapper.add(panel, BorderLayout.CENTER);
         getContentPane().add(wrapper, BorderLayout.CENTER);
 
-        // Deshabilitar botones para vendedores
+        // Deshabilitar botones de modificación para vendedores
         if (SessionManager.esVendedor()) {
             btnGuardar.setEnabled(false);
             btnEliminar.setEnabled(false);

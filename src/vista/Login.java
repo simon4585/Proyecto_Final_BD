@@ -71,24 +71,32 @@ public class Login extends JFrame {
         panel.add(btnIngresar);
 
         btnIngresar.addActionListener(e -> {
-            String username = txtUsuario.getText();
+            String username = txtUsuario.getText().trim();
             String password = new String(txtClave.getPassword());
 
+            System.out.println("DEBUG: Intentando login con usuario: '" + username + "'");
+            
             if (username.isEmpty() || password.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor ingrese usuario y contraseña", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            Usuario usuario = controlador.login(username, password);
+            try {
+                Usuario usuario = controlador.login(username, password);
+                System.out.println("DEBUG: Resultado login: " + (usuario != null ? "Exitoso - " + usuario.getRol() : "Fallido"));
 
-            if (usuario != null) {
-                SessionManager.setUsuarioActual(usuario);
-                JOptionPane.showMessageDialog(this, "Bienvenido " + usuario.getUsername() + " (" + usuario.getRol() + ")", "Login Exitoso", JOptionPane.INFORMATION_MESSAGE);
-                SwingUtilities.invokeLater(Menu::new);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de Login", JOptionPane.ERROR_MESSAGE);
-                txtClave.setText("");
+                if (usuario != null) {
+                    SessionManager.setUsuarioActual(usuario);
+                    JOptionPane.showMessageDialog(this, "Bienvenido " + usuario.getUsername() + " (" + usuario.getRol() + ")", "Login Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                    SwingUtilities.invokeLater(Menu::new);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de Login", JOptionPane.ERROR_MESSAGE);
+                    txtClave.setText("");
+                }
+            } catch (HeadlessException ex) {
+                System.err.println("ERROR: Excepción durante login: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
