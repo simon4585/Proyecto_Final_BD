@@ -2,12 +2,10 @@ package dao;
 
 
 import conexionBD.SQLConnection;
-import modelo.ComposicionProducto;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.math.BigDecimal;
+import modelo.ComposicionProducto;
 
 public class ComposicionProductoDAO {
 
