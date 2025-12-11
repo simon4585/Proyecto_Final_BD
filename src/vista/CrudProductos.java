@@ -1,6 +1,5 @@
 package vista;
 
-
 import controladores.ProductoControlador;
 import modelo.Producto;
 
@@ -17,91 +16,184 @@ public class CrudProductos extends JFrame {
 
     public CrudProductos() {
         setTitle("Gestión de Productos");
-        setSize(520, 450);
-        setLayout(null);
+        setSize(600, 460);
+        setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        getContentPane().setBackground(Color.WHITE);
 
+        Font tituloFont = new Font("Century Gothic", Font.BOLD, 20);
+        Font labelFont = new Font("Century Gothic", Font.BOLD, 18);
+        Font campoFont = new Font("Century Gothic", Font.PLAIN, 16);
+        Font botonFont = new Font("Century Gothic", Font.BOLD, 16);
+        Color azul = new Color(80, 150, 255);
+
+        // Título
         JLabel lblTitulo = new JLabel("Gestión de Productos");
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
-        lblTitulo.setBounds(150, 10, 250, 25);
-        add(lblTitulo);
+        lblTitulo.setFont(tituloFont);
+        lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTitulo.setBorder(BorderFactory.createEmptyBorder(12, 0, 12, 0));
+        add(lblTitulo, BorderLayout.NORTH);
 
+        // Panel central con GridBagLayout para pares etiqueta-campo
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 16, 10, 16);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        int row = 0;
+
+        // ID Producto
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0;
         JLabel lblCodigo = new JLabel("ID Producto:");
-        lblCodigo.setBounds(30, 60, 100, 25);
-        add(lblCodigo);
+        lblCodigo.setFont(labelFont);
+        panel.add(lblCodigo, gbc);
 
+        gbc.gridx = 1;
+        gbc.weightx = 1;
         txtCodigo = new JTextField();
-        txtCodigo.setBounds(140, 60, 100, 25);
-        add(txtCodigo);
+        txtCodigo.setFont(campoFont);
+        txtCodigo.setPreferredSize(new Dimension(200, 28));
+        panel.add(txtCodigo, gbc);
 
+        // Descripción
+        row++;
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0;
         JLabel lblDesc = new JLabel("Descripción:");
-        lblDesc.setBounds(30, 100, 100, 25);
-        add(lblDesc);
+        lblDesc.setFont(labelFont);
+        panel.add(lblDesc, gbc);
 
+        gbc.gridx = 1;
+        gbc.weightx = 1;
         txtDescripcion = new JTextField();
-        txtDescripcion.setBounds(140, 100, 300, 25);
-        add(txtDescripcion);
+        txtDescripcion.setFont(campoFont);
+        panel.add(txtDescripcion, gbc);
 
+        // Talla
+        row++;
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0;
         JLabel lblTalla = new JLabel("Talla:");
-        lblTalla.setBounds(30, 140, 100, 25);
-        add(lblTalla);
+        lblTalla.setFont(labelFont);
+        panel.add(lblTalla, gbc);
 
+        gbc.gridx = 1;
+        gbc.weightx = 1;
         txtTalla = new JTextField();
-        txtTalla.setBounds(140, 140, 100, 25);
-        add(txtTalla);
+        txtTalla.setFont(campoFont);
+        panel.add(txtTalla, gbc);
 
+        // Sexo
+        row++;
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0;
         JLabel lblSexo = new JLabel("Sexo:");
-        lblSexo.setBounds(30, 180, 100, 25);
-        add(lblSexo);
+        lblSexo.setFont(labelFont);
+        panel.add(lblSexo, gbc);
 
+        gbc.gridx = 1;
+        gbc.weightx = 1;
         String[] sexo = {"Masculino", "Femenino", "Unisex"};
         cbSexo = new JComboBox<>(sexo);
-        cbSexo.setBounds(140, 180, 120, 25);
-        add(cbSexo);
+        cbSexo.setFont(campoFont);
+        panel.add(cbSexo, gbc);
 
-        JLabel lblTipos = new JLabel("Tipo:");
-        lblTipos.setBounds(30, 300, 100, 25);
-        add(lblTipos);
-        String[] tipos ={"Camisa", "Pantalón", "Sudadera", "Pantaloneta", "Jardinera"};
-        cbTipo = new JComboBox<>(tipos);
-        cbTipo.setBounds(140, 300, 120, 25);
-        add(cbTipo);
-
+        // Precio
+        row++;
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0;
         JLabel lblPrecio = new JLabel("Precio:");
-        lblPrecio.setBounds(30, 220, 100, 25);
-        add(lblPrecio);
+        lblPrecio.setFont(labelFont);
+        panel.add(lblPrecio, gbc);
 
+        gbc.gridx = 1;
+        gbc.weightx = 1;
         txtPrecio = new JTextField();
-        txtPrecio.setBounds(140, 220, 150, 25);
-        add(txtPrecio);
+        txtPrecio.setFont(campoFont);
+        panel.add(txtPrecio, gbc);
 
+        // Cantidad
+        row++;
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0;
         JLabel lblCantidad = new JLabel("Cantidad:");
-        lblCantidad.setBounds(30, 260, 100, 25);
-        add(lblCantidad);
+        lblCantidad.setFont(labelFont);
+        panel.add(lblCantidad, gbc);
 
+        gbc.gridx = 1;
+        gbc.weightx = 1;
         txtCantidad = new JTextField();
-        txtCantidad.setBounds(140, 260, 150, 25);
-        add(txtCantidad);
+        txtCantidad.setFont(campoFont);
+        panel.add(txtCantidad, gbc);
+
+        // Tipo (se deja al final, igual estilo)
+        row++;
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0;
+        JLabel lblTipos = new JLabel("Tipo:");
+        lblTipos.setFont(labelFont);
+        panel.add(lblTipos, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        String[] tipos = {"Camisa", "Pantalón", "Sudadera", "Pantaloneta", "Jardinera"};
+        cbTipo = new JComboBox<>(tipos);
+        cbTipo.setFont(campoFont);
+        panel.add(cbTipo, gbc);
+
+        // Agregar padding al panel central
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setBackground(Color.WHITE);
+        wrapper.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
+        wrapper.add(panel, BorderLayout.CENTER);
+        add(wrapper, BorderLayout.CENTER);
+
+        // Panel de botones (abajo)
+        JPanel panelBtns = new JPanel(new FlowLayout(FlowLayout.CENTER, 18, 12));
+        panelBtns.setBackground(Color.WHITE);
 
         JButton btnGuardar = new JButton("Guardar");
-        btnGuardar.setBounds(40, 330, 100, 35);
-        add(btnGuardar);
+        btnGuardar.setFont(botonFont);
+        btnGuardar.setBackground(azul);
+        btnGuardar.setForeground(Color.WHITE);
+        btnGuardar.setPreferredSize(new Dimension(140, 38));
 
         JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.setBounds(150, 330, 100, 35);
-        add(btnBuscar);
+        btnBuscar.setFont(botonFont);
+        btnBuscar.setBackground(azul);
+        btnBuscar.setForeground(Color.WHITE);
+        btnBuscar.setPreferredSize(new Dimension(140, 38));
 
         JButton btnEditar = new JButton("Actualizar");
-        btnEditar.setBounds(260, 330, 120, 35);
-        add(btnEditar);
+        btnEditar.setFont(botonFont);
+        btnEditar.setBackground(azul);
+        btnEditar.setForeground(Color.WHITE);
+        btnEditar.setPreferredSize(new Dimension(140, 38));
 
         JButton btnEliminar = new JButton("Eliminar");
-        btnEliminar.setBounds(390, 330, 100, 35);
-        add(btnEliminar);
+        btnEliminar.setFont(botonFont);
+        btnEliminar.setBackground(azul);
+        btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setPreferredSize(new Dimension(140, 38));
 
-        // ----------------------------- ACCIONES -----------------------------
+        panelBtns.add(btnGuardar);
+        panelBtns.add(btnBuscar);
+        panelBtns.add(btnEditar);
+        panelBtns.add(btnEliminar);
+
+        add(panelBtns, BorderLayout.SOUTH);
+
+        // ================= ACCIONES =================
 
         btnGuardar.addActionListener(e -> insertarProducto());
         btnBuscar.addActionListener(e -> buscarProducto());
@@ -120,6 +212,7 @@ public class CrudProductos extends JFrame {
 
             if (controlador.insertarProducto(p)) {
                 JOptionPane.showMessageDialog(this, "Producto registrado correctamente");
+                limpiar();
             } else {
                 JOptionPane.showMessageDialog(this, "Error al registrar");
             }
@@ -142,8 +235,9 @@ public class CrudProductos extends JFrame {
             txtDescripcion.setText(p.getDescripcion());
             txtTalla.setText(p.getTalla());
             cbSexo.setSelectedItem(p.getSexo());
-            txtPrecio.setText(p.getPrecioVenta().toString());
-            txtCantidad.setText(p.getCantidadExistente().toString());
+            txtPrecio.setText(p.getPrecioVenta() != null ? p.getPrecioVenta().toString() : "");
+            txtCantidad.setText(p.getCantidadExistente() != null ? p.getCantidadExistente().toString() : "");
+            cbTipo.setSelectedItem(p.getTipoProducto());
         }
     }
 
@@ -154,6 +248,7 @@ public class CrudProductos extends JFrame {
 
             if (controlador.actualizarProducto(p)) {
                 JOptionPane.showMessageDialog(this, "Producto actualizado correctamente");
+                limpiar();
             } else {
                 JOptionPane.showMessageDialog(this, "Error al actualizar");
             }
@@ -172,6 +267,7 @@ public class CrudProductos extends JFrame {
 
         if (controlador.eliminarProducto(id)) {
             JOptionPane.showMessageDialog(this, "Producto eliminado");
+            limpiar();
         } else {
             JOptionPane.showMessageDialog(this, "No se pudo eliminar");
         }
@@ -208,5 +304,15 @@ public class CrudProductos extends JFrame {
         p.setCantidadExistente(Integer.parseInt(txtCantidad.getText()));
 
         return p;
+    }
+
+    private void limpiar() {
+        txtCodigo.setText("");
+        txtDescripcion.setText("");
+        txtTalla.setText("");
+        txtPrecio.setText("");
+        txtCantidad.setText("");
+        cbSexo.setSelectedIndex(0);
+        cbTipo.setSelectedIndex(0);
     }
 }
