@@ -227,11 +227,12 @@ public class CrudSuministros extends JFrame {
     }
 
     private void limpiar() {
-        txtId.setText("");
-        txtNitProveedor.setText("");
-        txtCodigoMateria.setText("");
-        txtCantidad.setText("");
-        txtObservaciones.setText("");
+        if (txtId != null) txtId.setText("");
+        if (txtNitProveedor != null) txtNitProveedor.setText("");
+        if (txtCodigoMateria != null) txtCodigoMateria.setText("");
+        if (txtCantidad != null) txtCantidad.setText("");
+        if (txtObservaciones != null) txtObservaciones.setText("");
     }
+
 
 }
