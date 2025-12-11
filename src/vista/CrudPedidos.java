@@ -1,14 +1,12 @@
 package vista;
 
 import controladores.PedidoControlador;
-import modelo.Pedido;
-
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import javax.swing.*;
+import modelo.Pedido;
+import utils.SessionManager;
 
 public class CrudPedidos extends JFrame {
 
@@ -137,6 +135,13 @@ public class CrudPedidos extends JFrame {
         gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
         add(botones, gbc);
 
+        // Deshabilitar botones para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnActualizar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
+
 
         // ==============================
         // ACCIONES
@@ -165,7 +170,7 @@ public class CrudPedidos extends JFrame {
                     JOptionPane.showMessageDialog(null, "Error al guardar pedido.");
                 }
 
-            } catch (Exception ex) {
+            } catch (HeadlessException ex) {
                 JOptionPane.showMessageDialog(null, "Datos inválidos: " + ex.getMessage());
             }
         });
@@ -186,7 +191,7 @@ public class CrudPedidos extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "Pedido no encontrado.");
                 }
-            } catch (Exception ex) {
+            } catch (HeadlessException | NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "ID inválido.");
             }
         });
@@ -203,7 +208,7 @@ public class CrudPedidos extends JFrame {
                     JOptionPane.showMessageDialog(null, "No se pudo actualizar.");
                 }
 
-            } catch (Exception ex) {
+            } catch (HeadlessException | NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "ID inválido.");
             }
         });
@@ -226,7 +231,7 @@ public class CrudPedidos extends JFrame {
                     JOptionPane.showMessageDialog(null, "No existe un pedido con ese ID.");
                 }
 
-            } catch (Exception ex) {
+            } catch (HeadlessException | NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "ID inválido.");
             }
         });

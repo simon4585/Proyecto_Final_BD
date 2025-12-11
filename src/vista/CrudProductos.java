@@ -1,11 +1,12 @@
 package vista;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import utils.SessionManager;
 
 public class CrudProductos extends JFrame {
 
-    private JTextField txtCodigo, txtDescripcion, txtTalla, txtPrecio, txtCantidad;
+    private final  JTextField txtCodigo, txtDescripcion, txtTalla, txtPrecio, txtCantidad;
 
     public CrudProductos() {
 
@@ -115,6 +116,13 @@ public class CrudProductos extends JFrame {
         btnEliminar.setForeground(Color.WHITE);
         btnEliminar.setFont(fontBtn);
         add(btnEliminar);
+
+        // Deshabilitar botones para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEditar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
 
         setVisible(true);
     }

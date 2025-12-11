@@ -6,11 +6,11 @@ import java.sql.SQLException;
 public class SQLConnection {
 
     public static Connection getConnection() throws SQLException {
-        String host = System.getenv("localhost");
-        String port = System.getenv("5432");
-        String dbName = System.getenv("ProyectoBD");
-        String user = System.getenv("postgres");
-        String pass = System.getenv("");
+        String host = System.getenv("DB_HOST");
+        String port = System.getenv("DB_PORT");
+        String dbName = System.getenv("DB_NAME");
+        String user = System.getenv("DB_USER");
+        String pass = System.getenv("DB_PASS");
 
         String url = "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
 

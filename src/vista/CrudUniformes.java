@@ -1,15 +1,16 @@
 package vista;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import utils.SessionManager;
 
 public class CrudUniformes extends JFrame {
 
-    private JTextField txtId, txtTipo, txtColor, txtTipoTela,
+    private final JTextField txtId, txtTipo, txtColor, txtTipoTela,
             txtLugarBordado, txtTipoBordado, txtEstampado,
             txtIdColegio, txtIdProducto;
-    private JCheckBox chkLlevaBordado;
-    private JButton btnGuardar, btnBuscar, btnEliminar;
+    private final JCheckBox chkLlevaBordado;
+    private final JButton btnGuardar, btnBuscar, btnEliminar;
 
     public CrudUniformes() {
         setTitle("Gestión de Uniformes");
@@ -223,6 +224,12 @@ public class CrudUniformes extends JFrame {
         wrapper.setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
         wrapper.add(content, BorderLayout.CENTER);
         getContentPane().add(wrapper, BorderLayout.CENTER);
+
+        // Deshabilitar botones para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
 
         setVisible(true);
     }

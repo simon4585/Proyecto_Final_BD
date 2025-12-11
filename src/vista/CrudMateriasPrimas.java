@@ -1,11 +1,11 @@
 package vista;
 
 import controladores.MateriaPrimaControlador;
-import modelo.MateriaPrima;
-
-import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
+import javax.swing.*;
+import modelo.MateriaPrima;
+import utils.SessionManager;
 
 public class CrudMateriasPrimas extends JFrame {
 
@@ -111,7 +111,7 @@ public class CrudMateriasPrimas extends JFrame {
         btnGuardar.addActionListener(e -> {
             try {
                 MateriaPrima m = new MateriaPrima();
-                m.setCodigo(Integer.parseInt(txtCodigo.getText()));
+                m.setCodigo(Integer.valueOf(txtCodigo.getText()));
                 m.setTipo(txtTipo.getText());
                 m.setDescripcion(txtDescripcion.getText());
                 m.setCantidadDispo(new BigDecimal(txtCantidad.getText()));
@@ -131,7 +131,7 @@ public class CrudMateriasPrimas extends JFrame {
                             "Materia prima registrada." : "Error al registrar.");
                 }
 
-            } catch (Exception ex) {
+            } catch (HeadlessException | NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this,
                         "Datos inválidos: " + ex.getMessage());
             }
@@ -148,7 +148,7 @@ public class CrudMateriasPrimas extends JFrame {
 
                 limpiar();
 
-            } catch (Exception ex) {
+            } catch (HeadlessException | NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this,
                         "Ingrese un código válido.");
             }
@@ -156,6 +156,12 @@ public class CrudMateriasPrimas extends JFrame {
 
         // BUSCAR AUTOMÁTICO AL SALIR DEL CAMPO CÓDIGO
         txtCodigo.addActionListener(e -> buscar());
+
+        // Deshabilitar botones para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
 
         setVisible(true);
     }
@@ -180,7 +186,7 @@ public class CrudMateriasPrimas extends JFrame {
             txtUnidad.setText(m.getUnidadMedida());
             chkCertificado.setSelected(m.isCertificadoDispo());
 
-        } catch (Exception e) {
+        } catch (HeadlessException | NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
                     "Código inválido.");
         }

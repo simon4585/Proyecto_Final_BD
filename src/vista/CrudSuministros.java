@@ -1,13 +1,14 @@
 package vista;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import utils.SessionManager;
 
 public class CrudSuministros extends JFrame {
 
-    private JTextField txtId, txtNitProveedor, txtCodigoMateria, txtCantidad;
-    private JTextArea txtObservaciones;
-    private JButton btnGuardar, btnBuscar, btnEliminar;
+    private final JTextField txtId, txtNitProveedor, txtCodigoMateria, txtCantidad;
+    private final JTextArea txtObservaciones;
+    private final JButton btnGuardar, btnBuscar, btnEliminar;
 
     public CrudSuministros() {
         setTitle("Registro de Suministros");
@@ -155,6 +156,12 @@ public class CrudSuministros extends JFrame {
         wrapper.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
         wrapper.add(panel, BorderLayout.CENTER);
         getContentPane().add(wrapper, BorderLayout.CENTER);
+
+        // Deshabilitar botones para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
 
         setVisible(true);
     }

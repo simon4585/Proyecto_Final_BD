@@ -1,11 +1,12 @@
 package vista;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import utils.SessionManager;
 
 public class CrudProveedores extends JFrame {
 
-    private JTextField txtNit, txtNombre, txtDireccion, txtTelefono, txtContacto;
+    private final JTextField txtNit, txtNombre, txtDireccion, txtTelefono, txtContacto;
 
     public CrudProveedores() {
 
@@ -93,6 +94,11 @@ public class CrudProveedores extends JFrame {
         btnBuscar.setFont(fontBotones);
         btnBuscar.setFocusPainted(false);
         add(btnBuscar);
+
+        // Deshabilitar botones para vendedores
+        if (SessionManager.esVendedor()) {
+            btnGuardar.setEnabled(false);
+        }
 
         setVisible(true);
     }
