@@ -12,7 +12,6 @@ import utils.SessionManager;
 public class CrudProductos extends JFrame {
 
     private final  JTextField txtCodigo, txtDescripcion, txtTalla, txtPrecio, txtCantidad;
-    private JTextField txtCodigo, txtDescripcion, txtTalla, txtPrecio, txtCantidad;
     private JComboBox<String> cbSexo;
     private JComboBox<String> cbTipo;
     private ProductoControlador controlador = new ProductoControlador();

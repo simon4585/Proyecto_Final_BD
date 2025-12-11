@@ -14,7 +14,7 @@ public class CrudProveedores extends JFrame {
     private JButton btnGuardar, btnBuscar, btnActualizar, btnEliminar;
 
     private ProveedorControlador controlador = new ProveedorControlador();
-    private final JTextField txtNit, txtNombre, txtDireccion, txtTelefono, txtContacto;
+
 
     public CrudProveedores() {
         // --- CONFIGURACIÓN GENERAL ---
