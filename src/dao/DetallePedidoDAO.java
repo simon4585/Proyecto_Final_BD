@@ -52,7 +52,7 @@ public class DetallePedidoDAO {
         }
     }
 
-    public List<DetallePedido> listarPorPedido(int idPedido) {
+    public List<DetallePedido> ConsultarPedido(int idPedido) {
         List<DetallePedido> lista = new ArrayList<>();
         String sql = "SELECT * FROM detalle_pedido WHERE id_pedido=?";
         try (Connection con = SQLConnection.getConnection();
@@ -72,4 +72,29 @@ public class DetallePedidoDAO {
         }
         return lista;
     }
+    public List<DetallePedido> listarDetallesPedido() {
+        List<DetallePedido> lista = new ArrayList<>();
+        String sql = "SELECT * FROM detalle_pedido";
+
+        try (Connection con = SQLConnection.getConnection();
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                DetallePedido d = new DetallePedido();
+                d.setIdDetallePedido(rs.getInt("id_detalle_pedido"));
+                d.setIdPedido(rs.getInt("id_pedido"));
+                d.setIdProducto(rs.getInt("id_producto"));
+                d.setCantidad(rs.getInt("cantidad"));
+
+                lista.add(d);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al listar detalles de pedidos: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
 }
