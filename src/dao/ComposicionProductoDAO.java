@@ -38,13 +38,39 @@ public class ComposicionProductoDAO {
         }
     }
 
-    public List<ComposicionProducto> listarPorProducto(int idProducto) {
-        List<ComposicionProducto> lista = new ArrayList<>();
-        String sql = "SELECT * FROM composicion_producto WHERE id_producto=?";
+
+    public ComposicionProducto consultarComposicion(int idComposicion) {
+        String sql = "SELECT * FROM composicion_producto WHERE id_composicion = ?";
+
         try (Connection con = SQLConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, idProducto);
+
+            ps.setInt(1, idComposicion);
             ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                ComposicionProducto cp = new ComposicionProducto();
+                cp.setIdComposicion(rs.getInt("id_composicion"));
+                cp.setIdProducto(rs.getInt("id_producto"));
+                cp.setCodigo(rs.getInt("codigo"));
+                cp.setCantidadUsada(rs.getBigDecimal("cantidad_usada"));
+                return cp;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al consultar composición: " + e.getMessage());
+        }
+
+        return null; // NO ENCONTRADO
+    }
+    public ArrayList<ComposicionProducto> listarComposiciones() {
+        ArrayList<ComposicionProducto> lista = new ArrayList<>();
+        String sql = "SELECT * FROM composicion_producto";
+
+        try (Connection con = SQLConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 ComposicionProducto c = new ComposicionProducto();
                 c.setIdComposicion(rs.getInt("id_composicion"));
@@ -53,10 +79,34 @@ public class ComposicionProductoDAO {
                 c.setCantidadUsada(rs.getBigDecimal("cantidad_usada"));
                 lista.add(c);
             }
+
         } catch (SQLException e) {
-            System.out.println("Error listar composicion: " + e.getMessage());
+            System.out.println("Error al listar composiciones: " + e.getMessage());
         }
+
         return lista;
     }
+    public boolean actualizarComposicion(ComposicionProducto cp) {
+        String sql = "UPDATE composicion_producto SET id_producto = ?, codigo = ?, cantidad_usada = ? " +
+                "WHERE id_composicion = ?";
+
+        try (Connection con = SQLConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, cp.getIdProducto());
+            ps.setInt(2, cp.getCodigo());
+            ps.setBigDecimal(3, cp.getCantidadUsada());
+            ps.setInt(4, cp.getIdComposicion());
+
+            int filas = ps.executeUpdate();
+            return filas > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar composicion: " + e.getMessage());
+            return false;
+        }
+    }
+
+
 }
 
