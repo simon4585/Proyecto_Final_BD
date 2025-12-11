@@ -1,5 +1,8 @@
 package vista;
 
+import controladores.SuministroControlador;
+import modelo.Suministro;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,9 +12,11 @@ public class CrudSuministros extends JFrame {
     private JTextArea txtObservaciones;
     private JButton btnGuardar, btnBuscar, btnEliminar;
 
+    private SuministroControlador controlador = new SuministroControlador();
+
     public CrudSuministros() {
         setTitle("Registro de Suministros");
-        setSize(620, 420);
+        setSize(620, 400);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
 
@@ -73,42 +78,6 @@ public class CrudSuministros extends JFrame {
         txtCodigoMateria.setFont(fontField);
         panel.add(txtCodigoMateria, gbc);
 
-        // Cantidad ingresada
-        row++;
-        gbc.gridy = row;
-        gbc.gridx = 0;
-        gbc.weightx = 0;
-        JLabel lblCantidad = new JLabel("Cantidad ingresada:");
-        lblCantidad.setFont(fontLabel);
-        panel.add(lblCantidad, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        txtCantidad = new JTextField();
-        txtCantidad.setFont(fontField);
-        panel.add(txtCantidad, gbc);
-
-        // Observaciones (label + textarea)
-        row++;
-        gbc.gridy = row;
-        gbc.gridx = 0;
-        gbc.weightx = 0;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        JLabel lblObs = new JLabel("Observaciones:");
-        lblObs.setFont(fontLabel);
-        panel.add(lblObs, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.ipady = 80; // altura del textarea
-        txtObservaciones = new JTextArea();
-        txtObservaciones.setLineWrap(true);
-        txtObservaciones.setWrapStyleWord(true);
-        txtObservaciones.setFont(fontField);
-        JScrollPane scrollObs = new JScrollPane(txtObservaciones);
-        panel.add(scrollObs, gbc);
-
         // Reset constraints para botones
         gbc.ipady = 0;
         gbc.fill = GridBagConstraints.NONE;
@@ -148,7 +117,7 @@ public class CrudSuministros extends JFrame {
 
         panel.add(panelBtns, gbc);
 
-        // Wrapper con padding
+        // wrapper con padding
         getContentPane().setLayout(new BorderLayout());
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setBackground(Color.WHITE);
@@ -156,8 +125,113 @@ public class CrudSuministros extends JFrame {
         wrapper.add(panel, BorderLayout.CENTER);
         getContentPane().add(wrapper, BorderLayout.CENTER);
 
+        // acciones
+
+        // GUARDAR
+        btnGuardar.addActionListener(e -> {
+            try {
+                String nit = txtNitProveedor.getText().trim();
+                String codigoTxt = txtCodigoMateria.getText().trim();
+
+                if (nit.isEmpty() || codigoTxt.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "NIT y Código de materia prima son obligatorios.");
+                    return;
+                }
+
+                int codigo = Integer.parseInt(codigoTxt);
+
+                Suministro s = new Suministro();
+                s.setNit(nit);
+                s.setCodigo(codigo);
+
+
+                String idTxt = txtId.getText().trim();
+                if (!idTxt.isEmpty()) {
+                    try {
+                        s.setIdSuministro(Integer.parseInt(idTxt));
+                    } catch (NumberFormatException ex) {
+                        // ignoramos, no es obligatorio
+                    }
+                }
+
+
+                boolean ok = controlador.insertarSuministro(s);
+                if (ok) {
+                    JOptionPane.showMessageDialog(this, "Suministro registrado correctamente.");
+
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo registrar el suministro.");
+                }
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Código inválido.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+            }
+        });
+
+        // BUSCAR por ID
+        btnBuscar.addActionListener(e -> {
+            String idText = txtId.getText().trim();
+            if (idText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese el ID del suministro a buscar.");
+                return;
+            }
+            try {
+                int id = Integer.parseInt(idText);
+                Suministro s = controlador.buscarSuministro(id);
+                if (s != null) {
+                    txtNitProveedor.setText(s.getNit() != null ? s.getNit() : "");
+                    txtCodigoMateria.setText(s.getCodigo() != null ? String.valueOf(s.getCodigo()) : "");
+
+                } else {
+                    JOptionPane.showMessageDialog(this, "No existe un suministro con ese ID.");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "ID inválido.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al buscar: " + ex.getMessage());
+            }
+        });
+
+        // ELIMINAR por ID (usa eliminarSuministro)
+        btnEliminar.addActionListener(e -> {
+            String idText = txtId.getText().trim();
+            if (idText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese el ID del suministro a eliminar.");
+                return;
+            }
+            try {
+                int id = Integer.parseInt(idText);
+                int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar suministro con ID " + id + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
+                if (confirm != JOptionPane.YES_OPTION) return;
+
+                boolean ok = controlador.eliminarSuministro(id);
+                if (ok) {
+                    JOptionPane.showMessageDialog(this, "Suministro eliminado.");
+                    limpiar();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo eliminar (verifica existencia o restricciones).");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "ID inválido.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
+            }
+        });
+
         setVisible(true);
     }
 
+    private void limpiar() {
+        txtId.setText("");
+        txtNitProveedor.setText("");
+        txtCodigoMateria.setText("");
+        txtCantidad.setText("");
+        txtObservaciones.setText("");
+    }
 
 }

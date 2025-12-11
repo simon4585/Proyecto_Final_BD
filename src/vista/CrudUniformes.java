@@ -1,5 +1,8 @@
 package vista;
 
+import controladores.UniformeControlador;
+import modelo.Uniforme;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,6 +13,8 @@ public class CrudUniformes extends JFrame {
             txtIdColegio, txtIdProducto;
     private JCheckBox chkLlevaBordado;
     private JButton btnGuardar, btnBuscar, btnEliminar;
+
+    private UniformeControlador controlador = new UniformeControlador();
 
     public CrudUniformes() {
         setTitle("Gestión de Uniformes");
@@ -224,7 +229,135 @@ public class CrudUniformes extends JFrame {
         wrapper.add(content, BorderLayout.CENTER);
         getContentPane().add(wrapper, BorderLayout.CENTER);
 
+        // ========== ACTIONS ==========
+        btnGuardar.addActionListener(e -> guardarUniforme());
+        btnBuscar.addActionListener(e -> buscarUniforme());
+        btnEliminar.addActionListener(e -> eliminarUniforme());
+
         setVisible(true);
+    }
+
+    // ================= Métodos de acción =================
+
+    private void guardarUniforme() {
+        try {
+            String idTxt = txtId.getText().trim();
+            String tipo = txtTipo.getText().trim();
+            String color = txtColor.getText().trim();
+            String tipoTela = txtTipoTela.getText().trim();
+            boolean llevaBordado = chkLlevaBordado.isSelected();
+            String lugarBordado = txtLugarBordado.getText().trim();
+            String tipoBordado = txtTipoBordado.getText().trim();
+            String estampado = txtEstampado.getText().trim();
+            String idColeTxt = txtIdColegio.getText().trim();
+            String idProdTxt = txtIdProducto.getText().trim();
+
+            if (tipo.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El campo 'Tipo' es obligatorio.");
+                return;
+            }
+
+            Uniforme u = new Uniforme();
+            // campos comunes
+            u.setTipo(tipo);
+            u.setColor(color);
+            u.setTipoTela(tipoTela);
+            u.setLlevaBordado(llevaBordado);
+            u.setLugarBordado(lugarBordado);
+            u.setTipoBordado(tipoBordado);
+            u.setEstampado(estampado);
+
+            if (!idColeTxt.isEmpty()) u.setIdColegio(Integer.parseInt(idColeTxt));
+            if (!idProdTxt.isEmpty()) u.setIdProducto(Integer.parseInt(idProdTxt));
+
+            boolean ok;
+            if (!idTxt.isEmpty()) {
+                // actualizar si ID provisto
+                u.setIdUniforme(Integer.parseInt(idTxt));
+                ok = controlador.actualizarUniforme(u);
+                JOptionPane.showMessageDialog(this, ok ? "Uniforme actualizado." : "Error al actualizar uniforme.");
+            } else {
+                // insertar nuevo uniforme
+                ok = controlador.insertarUniforme(u);
+                JOptionPane.showMessageDialog(this, ok ? "Uniforme registrado." : "Error al registrar uniforme.");
+            }
+
+            if (ok) limpiar();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "ID, ID Colegio e ID Producto deben ser números enteros.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
+    }
+
+    private void buscarUniforme() {
+        String idTxt = txtId.getText().trim();
+        if (idTxt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el ID del uniforme a buscar.");
+            return;
+        }
+        try {
+            int id = Integer.parseInt(idTxt);
+            Uniforme u = controlador.buscarUniforme(id);
+            if (u == null) {
+                JOptionPane.showMessageDialog(this, "No existe un uniforme con ese ID.");
+                return;
+            }
+
+            txtTipo.setText(u.getTipo() != null ? u.getTipo() : "");
+            txtColor.setText(u.getColor() != null ? u.getColor() : "");
+            txtTipoTela.setText(u.getTipoTela() != null ? u.getTipoTela() : "");
+            chkLlevaBordado.setSelected(u.isLlevaBordado());
+            txtLugarBordado.setText(u.getLugarBordado() != null ? u.getLugarBordado() : "");
+            txtTipoBordado.setText(u.getTipoBordado() != null ? u.getTipoBordado() : "");
+            txtEstampado.setText(u.getEstampado() != null ? u.getEstampado() : "");
+            txtIdColegio.setText(u.getIdColegio() != null ? String.valueOf(u.getIdColegio()) : "");
+            txtIdProducto.setText(u.getIdProducto() != null ? String.valueOf(u.getIdProducto()) : "");
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "ID inválido.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al buscar: " + ex.getMessage());
+        }
+    }
+
+    private void eliminarUniforme() {
+        String idTxt = txtId.getText().trim();
+        if (idTxt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el ID del uniforme a eliminar.");
+            return;
+        }
+        try {
+            int id = Integer.parseInt(idTxt);
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar uniforme con ID " + id + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            if (confirm != JOptionPane.YES_OPTION) return;
+
+            boolean ok = controlador.eliminarUniforme(id);
+            JOptionPane.showMessageDialog(this, ok ? "Uniforme eliminado." : "No se pudo eliminar (verifica existencia o restricciones).");
+            if (ok) limpiar();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "ID inválido.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
+        }
+    }
+
+    private void limpiar() {
+        txtId.setText("");
+        txtTipo.setText("");
+        txtColor.setText("");
+        txtTipoTela.setText("");
+        chkLlevaBordado.setSelected(false);
+        txtLugarBordado.setText("");
+        txtTipoBordado.setText("");
+        txtEstampado.setText("");
+        txtIdColegio.setText("");
+        txtIdProducto.setText("");
     }
 
 }

@@ -1,11 +1,17 @@
 package vista;
 
+import controladores.ProveedorControlador;
+import modelo.Proveedor;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class CrudProveedores extends JFrame {
 
     private JTextField txtNit, txtNombre, txtDireccion, txtTelefono, txtContacto;
+    private JButton btnGuardar, btnBuscar;
+
+    private ProveedorControlador controlador = new ProveedorControlador();
 
     public CrudProveedores() {
 
@@ -78,7 +84,7 @@ public class CrudProveedores extends JFrame {
         add(txtContacto);
 
         // --- BOTONES ---
-        JButton btnGuardar = new JButton("Guardar");
+        btnGuardar = new JButton("Guardar");
         btnGuardar.setBounds(110, 260, 150, 40);
         btnGuardar.setBackground(new Color(80, 150, 255));
         btnGuardar.setForeground(Color.WHITE);
@@ -86,7 +92,7 @@ public class CrudProveedores extends JFrame {
         btnGuardar.setFocusPainted(false);
         add(btnGuardar);
 
-        JButton btnBuscar = new JButton("Buscar");
+        btnBuscar = new JButton("Buscar");
         btnBuscar.setBounds(300, 260, 150, 40);
         btnBuscar.setBackground(new Color(80, 150, 255));
         btnBuscar.setForeground(Color.WHITE);
@@ -94,6 +100,94 @@ public class CrudProveedores extends JFrame {
         btnBuscar.setFocusPainted(false);
         add(btnBuscar);
 
+        // ========== ACTIONS ==========
+
+        // Buscar al presionar Enter en NIT
+        txtNit.addActionListener(e -> buscarPorNit());
+
+        // Botón buscar
+        btnBuscar.addActionListener(e -> buscarPorNit());
+
+        // Guardar: si el NIT ya existe -> actualizar, si no -> insertar
+        btnGuardar.addActionListener(e -> {
+            String nit = txtNit.getText().trim();
+            String nombre = txtNombre.getText().trim();
+            String direccion = txtDireccion.getText().trim();
+            String telefono = txtTelefono.getText().trim();
+            String contacto = txtContacto.getText().trim();
+
+            if (nit.isEmpty() || nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "NIT y Nombre son obligatorios.");
+                return;
+            }
+
+            try {
+                Proveedor p = new Proveedor();
+                p.setNit(nit);
+                p.setNombre(nombre);
+                p.setDireccion(direccion);
+                p.setTelefono(telefono);
+                p.setNombreContacto(contacto); // **usando el setter correcto**
+
+                // verificar existencia
+                Proveedor existente = controlador.buscarProveedor(nit);
+                boolean ok;
+                if (existente == null) {
+                    ok = controlador.insertarProveedor(p);
+                    if (ok) {
+                        JOptionPane.showMessageDialog(this, "Proveedor registrado correctamente.");
+                        limpiar();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Error al registrar proveedor.");
+                    }
+                } else {
+                    ok = controlador.actualizarProveedor(p);
+                    if (ok) {
+                        JOptionPane.showMessageDialog(this, "Proveedor actualizado correctamente.");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Error al actualizar proveedor.");
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+            }
+        });
+
         setVisible(true);
     }
+
+    private void buscarPorNit() {
+        String nit = txtNit.getText().trim();
+        if (nit.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese un NIT para buscar.");
+            return;
+        }
+
+        try {
+            Proveedor p = controlador.buscarProveedor(nit);
+            if (p != null) {
+                txtNombre.setText(p.getNombre() != null ? p.getNombre() : "");
+                txtDireccion.setText(p.getDireccion() != null ? p.getDireccion() : "");
+                txtTelefono.setText(p.getTelefono() != null ? p.getTelefono() : "");
+                // ahora usamos el getter correcto
+                txtContacto.setText(p.getNombreContacto() != null ? p.getNombreContacto() : "");
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró un proveedor con ese NIT.");
+                limpiar();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al buscar proveedor: " + ex.getMessage());
+        }
+    }
+
+    private void limpiar() {
+        txtNit.setText("");
+        txtNombre.setText("");
+        txtDireccion.setText("");
+        txtTelefono.setText("");
+        txtContacto.setText("");
+    }
+
 }
