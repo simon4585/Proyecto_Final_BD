@@ -12,13 +12,13 @@ public class CrudUniformes extends JFrame {
             txtLugarBordado, txtTipoBordado, txtEstampado,
             txtIdColegio, txtIdProducto;
     private JCheckBox chkLlevaBordado;
-    private JButton btnGuardar, btnBuscar, btnEliminar;
+    private JButton btnGuardar, btnBuscar, btnActualizar, btnEliminar;
 
     private UniformeControlador controlador = new UniformeControlador();
 
     public CrudUniformes() {
         setTitle("Gestión de Uniformes");
-        setSize(900, 400);
+        setSize(900, 400); // un poco más alto para asegurar visibilidad
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
 
@@ -192,7 +192,7 @@ public class CrudUniformes extends JFrame {
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        JPanel panelBtns = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 0));
+        JPanel panelBtns = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         panelBtns.setBackground(Color.WHITE);
 
         Color azul = new Color(80, 150, 255);
@@ -201,22 +201,29 @@ public class CrudUniformes extends JFrame {
         btnGuardar.setFont(fontBtn);
         btnGuardar.setBackground(azul);
         btnGuardar.setForeground(Color.WHITE);
-        btnGuardar.setPreferredSize(new Dimension(160, 40));
+        btnGuardar.setPreferredSize(new Dimension(140, 40));
 
         btnBuscar = new JButton("Buscar");
         btnBuscar.setFont(fontBtn);
         btnBuscar.setBackground(azul);
         btnBuscar.setForeground(Color.WHITE);
-        btnBuscar.setPreferredSize(new Dimension(160, 40));
+        btnBuscar.setPreferredSize(new Dimension(140, 40));
+
+        btnActualizar = new JButton("Actualizar");
+        btnActualizar.setFont(fontBtn);
+        btnActualizar.setBackground(azul);
+        btnActualizar.setForeground(Color.WHITE);
+        btnActualizar.setPreferredSize(new Dimension(140, 40));
 
         btnEliminar = new JButton("Eliminar");
         btnEliminar.setFont(fontBtn);
         btnEliminar.setBackground(azul);
         btnEliminar.setForeground(Color.WHITE);
-        btnEliminar.setPreferredSize(new Dimension(160, 40));
+        btnEliminar.setPreferredSize(new Dimension(140, 40));
 
         panelBtns.add(btnGuardar);
         panelBtns.add(btnBuscar);
+        panelBtns.add(btnActualizar);
         panelBtns.add(btnEliminar);
 
         content.add(panelBtns, gbc);
@@ -232,6 +239,7 @@ public class CrudUniformes extends JFrame {
         // ========== ACTIONS ==========
         btnGuardar.addActionListener(e -> guardarUniforme());
         btnBuscar.addActionListener(e -> buscarUniforme());
+        btnActualizar.addActionListener(e -> actualizarUniforme());
         btnEliminar.addActionListener(e -> eliminarUniforme());
 
         setVisible(true);
@@ -321,6 +329,45 @@ public class CrudUniformes extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al buscar: " + ex.getMessage());
+        }
+    }
+
+    private void actualizarUniforme() {
+        String idTxt = txtId.getText().trim();
+        if (idTxt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el ID del uniforme para actualizar.");
+            return;
+        }
+        try {
+            int id = Integer.parseInt(idTxt);
+            Uniforme existente = controlador.buscarUniforme(id);
+            if (existente == null) {
+                JOptionPane.showMessageDialog(this, "No existe un uniforme con ese ID.");
+                return;
+            }
+
+            // construir uniforme con los datos actuales del formulario
+            Uniforme u = new Uniforme();
+            u.setIdUniforme(id);
+            u.setTipo(txtTipo.getText().trim());
+            u.setColor(txtColor.getText().trim());
+            u.setTipoTela(txtTipoTela.getText().trim());
+            u.setLlevaBordado(chkLlevaBordado.isSelected());
+            u.setLugarBordado(txtLugarBordado.getText().trim());
+            u.setTipoBordado(txtTipoBordado.getText().trim());
+            u.setEstampado(txtEstampado.getText().trim());
+            if (!txtIdColegio.getText().trim().isEmpty()) u.setIdColegio(Integer.parseInt(txtIdColegio.getText().trim()));
+            if (!txtIdProducto.getText().trim().isEmpty()) u.setIdProducto(Integer.parseInt(txtIdProducto.getText().trim()));
+
+            boolean ok = controlador.actualizarUniforme(u);
+            JOptionPane.showMessageDialog(this, ok ? "Uniforme actualizado correctamente." : "Error al actualizar uniforme.");
+            if (ok) limpiar();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "ID, ID Colegio e ID Producto deben ser números enteros.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar: " + ex.getMessage());
         }
     }
 

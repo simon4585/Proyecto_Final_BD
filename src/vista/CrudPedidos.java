@@ -5,8 +5,6 @@ import modelo.Pedido;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -19,7 +17,7 @@ public class CrudPedidos extends JFrame {
     public CrudPedidos() {
 
         setTitle("Gestión de Pedidos - Urban Stitch");
-        setSize(600, 500);
+        setSize(730, 530);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
@@ -111,23 +109,38 @@ public class CrudPedidos extends JFrame {
 
         JPanel botones = new JPanel();
         botones.setLayout(new GridLayout(1, 4, 10, 10));
+        botones.setBackground(Color.WHITE);
         Color azul = new Color(80, 150, 255);
+
+        Dimension btnSize = new Dimension(170, 44);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.setBackground(azul);
+        btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setFont(f);
+        btnGuardar.setFocusPainted(false);
+        btnGuardar.setPreferredSize(btnSize);
 
         JButton btnBuscar = new JButton("Buscar");
         btnBuscar.setBackground(azul);
-        btnGuardar.setFont(f);
+        btnBuscar.setForeground(Color.WHITE);
+        btnBuscar.setFont(f);
+        btnBuscar.setFocusPainted(false);
+        btnBuscar.setPreferredSize(btnSize);
 
         JButton btnActualizar = new JButton("Actualizar Estado");
         btnActualizar.setBackground(azul);
-        btnGuardar.setFont(f);
+        btnActualizar.setForeground(Color.WHITE);
+        btnActualizar.setFont(f);
+        btnActualizar.setFocusPainted(false);
+        btnActualizar.setPreferredSize(btnSize);
 
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.setBackground(azul);
-        btnGuardar.setFont(f);
+        btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setFont(f);
+        btnEliminar.setFocusPainted(false);
+        btnEliminar.setPreferredSize(btnSize);
 
         botones.add(btnGuardar);
         botones.add(btnBuscar);
@@ -159,14 +172,14 @@ public class CrudPedidos extends JFrame {
                 int idGen = controlador.insertarPedido(p);
 
                 if (idGen > 0) {
-                    JOptionPane.showMessageDialog(null, "Pedido registrado. ID generado: " + idGen);
+                    JOptionPane.showMessageDialog(this, "Pedido registrado. ID generado: " + idGen);
                     txtId.setText(String.valueOf(idGen));
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error al guardar pedido.");
+                    JOptionPane.showMessageDialog(this, "Error al guardar pedido.");
                 }
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Datos inválidos: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Datos inválidos: " + ex.getMessage());
             }
         });
 
@@ -184,10 +197,10 @@ public class CrudPedidos extends JFrame {
                     txtEstado.setText(p.getEstado());
                     txtDni.setText(p.getDniCliente());
                 } else {
-                    JOptionPane.showMessageDialog(null, "Pedido no encontrado.");
+                    JOptionPane.showMessageDialog(this, "Pedido no encontrado.");
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "ID inválido.");
+                JOptionPane.showMessageDialog(this, "ID inválido.");
             }
         });
 
@@ -198,13 +211,13 @@ public class CrudPedidos extends JFrame {
                 String estadoNuevo = txtEstado.getText();
 
                 if (controlador.actualizarEstadoPedido(id, estadoNuevo)) {
-                    JOptionPane.showMessageDialog(null, "Estado actualizado.");
+                    JOptionPane.showMessageDialog(this, "Estado actualizado.");
                 } else {
-                    JOptionPane.showMessageDialog(null, "No se pudo actualizar.");
+                    JOptionPane.showMessageDialog(this, "No se pudo actualizar.");
                 }
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "ID inválido.");
+                JOptionPane.showMessageDialog(this, "ID inválido.");
             }
         });
 
@@ -214,8 +227,9 @@ public class CrudPedidos extends JFrame {
                 int id = Integer.parseInt(txtId.getText());
 
                 if (controlador.eliminarPedido(id)) {
-                    JOptionPane.showMessageDialog(null, "Pedido eliminado.");
+                    JOptionPane.showMessageDialog(this, "Pedido eliminado.");
 
+                    txtId.setText("");
                     txtFechaPedido.setText("");
                     txtFechaEntrega.setText("");
                     txtAbono.setText("");
@@ -223,11 +237,11 @@ public class CrudPedidos extends JFrame {
                     txtEstado.setText("");
                     txtDni.setText("");
                 } else {
-                    JOptionPane.showMessageDialog(null, "No existe un pedido con ese ID.");
+                    JOptionPane.showMessageDialog(this, "No existe un pedido con ese ID.");
                 }
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "ID inválido.");
+                JOptionPane.showMessageDialog(this, "ID inválido.");
             }
         });
 
