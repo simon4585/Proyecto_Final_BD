@@ -1,117 +1,235 @@
 package vista;
 
+import controladores.PedidoControlador;
+import modelo.Pedido;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class CrudPedidos extends JFrame {
 
-    private JTextField txtNumPedido, txtCliente, txtArticulo;
-    private JTextArea txtMedidas;
-    private JTextField txtFechaEncargo, txtFechaEntrega, txtAbono;
+    private JTextField txtId, txtFechaPedido, txtFechaEntrega, txtAbono, txtMedidas, txtEstado, txtDni;
+
+    private PedidoControlador controlador = new PedidoControlador(); // ← controlador
 
     public CrudPedidos() {
 
-        setTitle("Gestión de Pedidos");
-        setSize(650, 520);
-        setLayout(null);
+        setTitle("Gestión de Pedidos - Urban Stitch");
+        setSize(600, 500);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
+        setLayout(new GridBagLayout());
 
-        Font labelFont = new Font("Century Gothic", Font.BOLD, 18);
-        Font buttonFont = new Font("Century Gothic", Font.BOLD, 20);
-        Color buttonColor = new Color(80, 150, 255);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        int labelX = 30;
-        int fieldX = 210;
-        int width = 350;
-        int height = 28;
+        Font f = new Font("Century Gothic", Font.BOLD, 16);
 
-        // ----------------- CAMPOS --------------------
+        // ==============================
+        // CAMPOS
+        // ==============================
 
-        JLabel lblNum = new JLabel("Número de Pedido:");
-        lblNum.setBounds(labelX, 20, 180, 30);
-        lblNum.setFont(labelFont);
-        add(lblNum);
+        JLabel lblId = new JLabel("ID Pedido:");
+        lblId.setFont(f);
+        gbc.gridx = 0; gbc.gridy = 0;
+        add(lblId, gbc);
 
-        txtNumPedido = new JTextField();
-        txtNumPedido.setBounds(fieldX, 20, width, height);
-        add(txtNumPedido);
+        txtId = new JTextField();
+        txtId.setFont(f);
+        gbc.gridx = 1;
+        add(txtId, gbc);
 
-        JLabel lblCliente = new JLabel("Cliente:");
-        lblCliente.setBounds(labelX, 65, 150, 30);
-        lblCliente.setFont(labelFont);
-        add(lblCliente);
+        JLabel lblFechaPedido = new JLabel("Fecha Pedido (AAAA-MM-DD):");
+        lblFechaPedido.setFont(f);
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(lblFechaPedido, gbc);
 
-        txtCliente = new JTextField();
-        txtCliente.setBounds(fieldX, 65, width, height);
-        add(txtCliente);
+        txtFechaPedido = new JTextField();
+        txtFechaPedido.setFont(f);
+        gbc.gridx = 1;
+        add(txtFechaPedido, gbc);
 
-        JLabel lblArticulo = new JLabel("Artículo:");
-        lblArticulo.setBounds(labelX, 110, 150, 30);
-        lblArticulo.setFont(labelFont);
-        add(lblArticulo);
-
-        txtArticulo = new JTextField();
-        txtArticulo.setBounds(fieldX, 110, width, height);
-        add(txtArticulo);
-
-        JLabel lblMedidas = new JLabel("<html>Medidas /<br>Anotación:</html>");
-        lblMedidas.setBounds(labelX, 155, 200, 60);
-        lblMedidas.setFont(labelFont);
-        add(lblMedidas);
-
-
-        txtMedidas = new JTextArea();
-        txtMedidas.setLineWrap(true);
-        txtMedidas.setWrapStyleWord(true);
-        txtMedidas.setBounds(fieldX, 155, width, 90);
-        txtMedidas.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        add(txtMedidas);
-
-        JLabel lblFechaEnc = new JLabel("Fecha de Encargo:");
-        lblFechaEnc.setBounds(labelX, 260, 180, 30);
-        lblFechaEnc.setFont(labelFont);
-        add(lblFechaEnc);
-
-        txtFechaEncargo = new JTextField();
-        txtFechaEncargo.setBounds(fieldX, 260, width, height);
-        add(txtFechaEncargo);
-
-        JLabel lblFechaEnt = new JLabel("Fecha de Entrega:");
-        lblFechaEnt.setBounds(labelX, 305, 180, 30);
-        lblFechaEnt.setFont(labelFont);
-        add(lblFechaEnt);
+        JLabel lblFechaEntrega = new JLabel("Fecha Entrega Estimada:");
+        lblFechaEntrega.setFont(f);
+        gbc.gridx = 0; gbc.gridy = 2;
+        add(lblFechaEntrega, gbc);
 
         txtFechaEntrega = new JTextField();
-        txtFechaEntrega.setBounds(fieldX, 305, width, height);
-        add(txtFechaEntrega);
+        txtFechaEntrega.setFont(f);
+        gbc.gridx = 1;
+        add(txtFechaEntrega, gbc);
 
         JLabel lblAbono = new JLabel("Abono:");
-        lblAbono.setBounds(labelX, 350, 150, 30);
-        lblAbono.setFont(labelFont);
-        add(lblAbono);
+        lblAbono.setFont(f);
+        gbc.gridx = 0; gbc.gridy = 3;
+        add(lblAbono, gbc);
 
         txtAbono = new JTextField();
-        txtAbono.setBounds(fieldX, 350, width, height);
-        add(txtAbono);
+        txtAbono.setFont(f);
+        gbc.gridx = 1;
+        add(txtAbono, gbc);
 
-        // ---------------- BOTONES ----------------
+        JLabel lblMedidas = new JLabel("Medidas:");
+        lblMedidas.setFont(f);
+        gbc.gridx = 0; gbc.gridy = 4;
+        add(lblMedidas, gbc);
 
-        JButton btnGuardar = new JButton("Registrar Pedido");
-        btnGuardar.setBounds(100, 410, 200, 40);
-        btnGuardar.setBackground(buttonColor);
-        btnGuardar.setForeground(Color.WHITE);
-        btnGuardar.setFont(buttonFont);
-        btnGuardar.setFocusPainted(false);
-        add(btnGuardar);
+        txtMedidas = new JTextField();
+        txtMedidas.setFont(f);
+        gbc.gridx = 1;
+        add(txtMedidas, gbc);
 
-        JButton btnEntregado = new JButton("Marcar Entregado");
-        btnEntregado.setBounds(320, 410, 220, 40);
-        btnEntregado.setBackground(buttonColor);
-        btnEntregado.setForeground(Color.WHITE);
-        btnEntregado.setFont(buttonFont);
-        btnEntregado.setFocusPainted(false);
-        add(btnEntregado);
+        JLabel lblEstado = new JLabel("Estado:");
+        lblEstado.setFont(f);
+        gbc.gridx = 0; gbc.gridy = 5;
+        add(lblEstado, gbc);
+
+        txtEstado = new JTextField();
+        txtEstado.setFont(f);
+        gbc.gridx = 1;
+        add(txtEstado, gbc);
+
+        JLabel lblDni = new JLabel("DNI Cliente:");
+        lblDni.setFont(f);
+        gbc.gridx = 0; gbc.gridy = 6;
+        add(lblDni, gbc);
+
+        txtDni = new JTextField();
+        txtDni.setFont(f);
+        gbc.gridx = 1;
+        add(txtDni, gbc);
+
+
+        // ==============================
+        // BOTONES
+        // ==============================
+
+        JPanel botones = new JPanel();
+        botones.setLayout(new GridLayout(1, 4, 10, 10));
+        Color azul = new Color(80, 150, 255);
+
+        JButton btnGuardar = new JButton("Guardar");
+        btnGuardar.setBackground(azul);
+        btnGuardar.setFont(f);
+
+        JButton btnBuscar = new JButton("Buscar");
+        btnBuscar.setBackground(azul);
+        btnGuardar.setFont(f);
+
+        JButton btnActualizar = new JButton("Actualizar Estado");
+        btnActualizar.setBackground(azul);
+        btnGuardar.setFont(f);
+
+        JButton btnEliminar = new JButton("Eliminar");
+        btnEliminar.setBackground(azul);
+        btnGuardar.setFont(f);
+
+        botones.add(btnGuardar);
+        botones.add(btnBuscar);
+        botones.add(btnActualizar);
+        botones.add(btnEliminar);
+
+        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
+        add(botones, gbc);
+
+
+        // ==============================
+        // ACCIONES
+        // ==============================
+
+        // GUARDAR
+        btnGuardar.addActionListener(e -> {
+            try {
+
+                Pedido p = new Pedido();
+                p.setFechaPedido(LocalDate.parse(txtFechaPedido.getText()));
+                p.setFechaEntregaEstimada(txtFechaEntrega.getText().isEmpty()
+                        ? null
+                        : LocalDate.parse(txtFechaEntrega.getText()));
+                p.setAbono(new BigDecimal(txtAbono.getText()));
+                p.setMedidas(txtMedidas.getText());
+                p.setEstado(txtEstado.getText());
+                p.setDniCliente(txtDni.getText());
+
+                int idGen = controlador.insertarPedido(p);
+
+                if (idGen > 0) {
+                    JOptionPane.showMessageDialog(null, "Pedido registrado. ID generado: " + idGen);
+                    txtId.setText(String.valueOf(idGen));
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error al guardar pedido.");
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Datos inválidos: " + ex.getMessage());
+            }
+        });
+
+        // BUSCAR
+        btnBuscar.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(txtId.getText());
+                Pedido p = controlador.buscarPedido(id);
+
+                if (p != null) {
+                    txtFechaPedido.setText(String.valueOf(p.getFechaPedido()));
+                    txtFechaEntrega.setText(String.valueOf(p.getFechaEntregaEstimada()));
+                    txtAbono.setText(String.valueOf(p.getAbono()));
+                    txtMedidas.setText(p.getMedidas());
+                    txtEstado.setText(p.getEstado());
+                    txtDni.setText(p.getDniCliente());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Pedido no encontrado.");
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "ID inválido.");
+            }
+        });
+
+        // ACTUALIZAR ESTADO
+        btnActualizar.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(txtId.getText());
+                String estadoNuevo = txtEstado.getText();
+
+                if (controlador.actualizarEstadoPedido(id, estadoNuevo)) {
+                    JOptionPane.showMessageDialog(null, "Estado actualizado.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se pudo actualizar.");
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "ID inválido.");
+            }
+        });
+
+        // ELIMINAR
+        btnEliminar.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(txtId.getText());
+
+                if (controlador.eliminarPedido(id)) {
+                    JOptionPane.showMessageDialog(null, "Pedido eliminado.");
+
+                    txtFechaPedido.setText("");
+                    txtFechaEntrega.setText("");
+                    txtAbono.setText("");
+                    txtMedidas.setText("");
+                    txtEstado.setText("");
+                    txtDni.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(null, "No existe un pedido con ese ID.");
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "ID inválido.");
+            }
+        });
 
         setVisible(true);
     }

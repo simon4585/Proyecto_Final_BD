@@ -1,11 +1,17 @@
 package vista;
 
+import controladores.ClienteControlador;
+import modelo.Cliente;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class CrudClientes extends JFrame {
 
     private JTextField txtDocumento, txtNombre, txtTelefono;
+    private ClienteControlador controlador = new ClienteControlador(); // ← CONTROLADOR
 
     public CrudClientes() {
 
@@ -38,7 +44,6 @@ public class CrudClientes extends JFrame {
         gbc.gridx = 1;
         add(txtDocumento, gbc);
 
-
         JLabel lblNombre = new JLabel("Nombre:");
         lblNombre.setFont(fuente);
         gbc.gridx = 0;
@@ -51,7 +56,6 @@ public class CrudClientes extends JFrame {
         gbc.gridx = 1;
         add(txtNombre, gbc);
 
-
         JLabel lblTel = new JLabel("Teléfono:");
         lblTel.setFont(fuente);
         gbc.gridx = 0;
@@ -63,6 +67,7 @@ public class CrudClientes extends JFrame {
         txtTelefono.setPreferredSize(new Dimension(250, 30));
         gbc.gridx = 1;
         add(txtTelefono, gbc);
+
 
         // =======================
         // Botones
@@ -96,6 +101,83 @@ public class CrudClientes extends JFrame {
         gbc.gridwidth = 2;
         gbc.insets = new Insets(20, 20, 20, 20);
         add(panelBotones, gbc);
+
+        // =======================
+        // ACCIONES
+        // =======================
+
+        // GUARDAR
+        btnGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String dni = txtDocumento.getText();
+                String nombre = txtNombre.getText();
+                String tel = txtTelefono.getText();
+
+                if (dni.isEmpty() || nombre.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Documento y Nombre son obligatorios.");
+                    return;
+                }
+
+                Cliente c = new Cliente(dni, nombre, tel);
+
+                if (controlador.insertarCliente(c)) {
+                    JOptionPane.showMessageDialog(null, "Cliente registrado con éxito.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error al registrar cliente.");
+                }
+            }
+        });
+
+        // BUSCAR
+        btnBuscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String dni = txtDocumento.getText();
+
+                if (dni.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Ingresa un documento para buscar.");
+                    return;
+                }
+
+                Cliente c = controlador.buscarCliente(dni);
+
+                if (c != null) {
+                    txtNombre.setText(c.getNombre());
+                    txtTelefono.setText(c.getTelefono());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
+                }
+            }
+        });
+
+        // ELIMINAR
+        btnEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String dni = txtDocumento.getText();
+
+                if (dni.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Ingresa un documento para eliminar.");
+                    return;
+                }
+
+                try {
+                    if (controlador.eliminarCliente(dni)) {
+                        JOptionPane.showMessageDialog(null, "Cliente eliminado.");
+                        txtNombre.setText("");
+                        txtTelefono.setText("");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No existe un cliente con ese documento.");
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error al eliminar: " + ex.getMessage());
+                }
+            }
+        });
 
         setVisible(true);
     }

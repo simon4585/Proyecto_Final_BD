@@ -1,19 +1,25 @@
 package vista;
 
+import controladores.MateriaPrimaControlador;
+import modelo.MateriaPrima;
+
 import javax.swing.*;
 import java.awt.*;
+import java.math.BigDecimal;
 
 public class CrudMateriasPrimas extends JFrame {
 
     private JTextField txtCodigo, txtTipo, txtDescripcion, txtCantidad, txtUnidad;
     private JCheckBox chkCertificado;
 
+    private MateriaPrimaControlador controlador = new MateriaPrimaControlador();
+
     public CrudMateriasPrimas() {
         setTitle("Inventario - Materias Primas");
         setSize(550, 430);
         setLayout(null);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(Color.WHITE); // Fondo blanco
+        getContentPane().setBackground(Color.WHITE);
 
         Font fontLabel = new Font("Century Gothic", Font.BOLD, 18);
         Font fontBtn   = new Font("Century Gothic", Font.BOLD, 18);
@@ -99,6 +105,92 @@ public class CrudMateriasPrimas extends JFrame {
         btnEliminar.setFont(fontBtn);
         add(btnEliminar);
 
+        // ---------------- EVENTOS -------------------
+
+        // GUARDAR / ACTUALIZAR
+        btnGuardar.addActionListener(e -> {
+            try {
+                MateriaPrima m = new MateriaPrima();
+                m.setCodigo(Integer.parseInt(txtCodigo.getText()));
+                m.setTipo(txtTipo.getText());
+                m.setDescripcion(txtDescripcion.getText());
+                m.setCantidadDispo(new BigDecimal(txtCantidad.getText()));
+                m.setUnidadMedida(txtUnidad.getText());
+                m.setCertificadoDispo(chkCertificado.isSelected());
+
+                boolean existe = controlador.buscarMateriaPrima(m.getCodigo()) != null;
+
+                boolean ok;
+                if (existe) {
+                    ok = controlador.actualizarMateriaPrima(m);
+                    JOptionPane.showMessageDialog(this, ok ?
+                            "Materia prima actualizada." : "Error al actualizar.");
+                } else {
+                    ok = controlador.insertarMateriaPrima(m);
+                    JOptionPane.showMessageDialog(this, ok ?
+                            "Materia prima registrada." : "Error al registrar.");
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Datos inválidos: " + ex.getMessage());
+            }
+        });
+
+        // ELIMINAR
+        btnEliminar.addActionListener(e -> {
+            try {
+                int cod = Integer.parseInt(txtCodigo.getText());
+                boolean ok = controlador.eliminarMateriaPrima(cod);
+
+                JOptionPane.showMessageDialog(this,
+                        ok ? "Materia prima eliminada." : "No existe ese código.");
+
+                limpiar();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Ingrese un código válido.");
+            }
+        });
+
+        // BUSCAR AUTOMÁTICO AL SALIR DEL CAMPO CÓDIGO
+        txtCodigo.addActionListener(e -> buscar());
+
         setVisible(true);
+    }
+
+    // ---------------- MÉTODOS -------------------
+
+    private void buscar() {
+        try {
+            int codigo = Integer.parseInt(txtCodigo.getText());
+            MateriaPrima m = controlador.buscarMateriaPrima(codigo);
+
+            if (m == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No existe una materia prima con ese código.");
+                limpiar();
+                return;
+            }
+
+            txtTipo.setText(m.getTipo());
+            txtDescripcion.setText(m.getDescripcion());
+            txtCantidad.setText(m.getCantidadDispo().toString());
+            txtUnidad.setText(m.getUnidadMedida());
+            chkCertificado.setSelected(m.isCertificadoDispo());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Código inválido.");
+        }
+    }
+
+    private void limpiar() {
+        txtTipo.setText("");
+        txtDescripcion.setText("");
+        txtCantidad.setText("");
+        txtUnidad.setText("");
+        chkCertificado.setSelected(false);
     }
 }
